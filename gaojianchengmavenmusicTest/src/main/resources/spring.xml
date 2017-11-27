@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tool"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/tool http://www.springframework.org/schema/tool/spring-tool.xsd">
+
+    <!-- 引入jdbc配置文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+                <!--要是有多个配置文件，只需在这里继续添加即可 -->
+            </list>
+        </property>
+    </bean>
+
+    <!--扫描service包(包含子包)下所有使用注解的类型-->
+    <context:component-scan base-package="service"/>
+
+    <!--激活annotation功能-->
+    <context:annotation-config/>
+    <context:spring-configured/>
+
+    <!-- 类型转换及数据格式化 -->
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"/>
+
+    <!--1、配置数据库相关参数-->
+    <context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true"/>
+    <!-- 配置数据源 -->
+    <bean id="dataSource"
+          class="com.alibaba.druid.pool.DruidDataSource">
+        <!--驱动名称-->
+        <property name="driverClassName">
+            <value>${jdbc.driver}</value>
+        </property>
+        <!--访问路径-->
+        <property name="url">
+            <value>${jdbc.url}</value>
+        </property>
+        <!--用户名-->
+        <property name="username">
+            <value>${jdbc.user}</value>
+        </property>
+        <!--用户密码-->
+        <property name="password">
+            <value>${jdbc.password}</value>
+        </property>
+        <!--初始化连接大小-->
+        <property name="initialSize">
+            <value>${druid.initialSize}</value>
+        </property>
+        <!-- 连接池最大使用连接数量 -->
+        <property name="maxActive">
+            <value>${druid.maxActive}</value>
+        </property>
+        <!-- 连接池最小空闲 -->
+        <property name="minIdle">
+            <value>${druid.minIdle}</value>
+        </property>
+        <!-- 获取连接最大等待时间 -->
+        <property name="maxWait">
+            <value>${druid.maxWait}</value>
+        </property>
+        <property name="validationQuery">
+            <value>${druid.validationQuery}</value>
+        </property>
+        <property name="testOnBorrow">
+            <value>${druid.testOnBorrow}</value>
+        </property>
+        <property name="testOnReturn">
+            <value>${druid.testOnReturn}</value>
+        </property>
+        <property name="testWhileIdle">
+            <value>${druid.testWhileIdle}</value>
+        </property>
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis">
+            <value>${druid.timeBetweenEvictionRunsMillis}</value>
+        </property>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis">
+            <value>${druid.minEvictableIdleTimeMillis}</value>
+        </property>
+        <!-- 打开removeAbandoned功能 -->
+        <property name="removeAbandoned">
+            <value>${druid.removeAbandoned}</value>
+        </property>
+        <property name="removeAbandonedTimeout">
+            <value>${druid.removeAbandonedTimeout}</value>
+        </property>
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned">
+            <value>${druid.logAbandoned}</value>
+        </property>
+        <!-- 配置监控统计拦截的filters，去掉后监控界面sql无法统计 -->
+        <property name="filters">
+            <value>${druid.filters}</value>
+        </property>
+        <property name="maxPoolPreparedStatementPerConnectionSize">
+            <value>${druid.maxPoolPreparedStatementPerConnectionSize}</value>
+        </property>
+        <property name="poolPreparedStatements">
+            <value>${druid.poolPreparedStatements}</value>
+        </property>
+    </bean>
+
+    <!-- mapper批量扫描包，从mapper包中扫描出mapper接口，自动创建代理对象并且在spring容器中注册 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <!-- 配置Mybatis的文件 ，mapperLocations配置**Mapper.xml文件位置，configLocation配置mybatis文件位置-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--配置mybatis全局配置文件:mybatis-config.xml-->
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <!--扫描model包,使用别名,多个用;隔开-->
+        <property name="typeAliasesPackage" value="model"/>
+        <!--扫描sql配置文件:mapper需要的xml文件-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <value>
+                            offsetAsPageNum = true
+                            rowBoundsWithCount = true
+                            pageSizeZero = true
+                            reasonable = true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <!--事务回滚-->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+
+    <bean id="LoginDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <property name="mapperInterface" value="dao.LoginDao"/>
+    </bean>
+    <bean id="InsertSongDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <property name="mapperInterface" value="dao.InsertSongDao"/>
+    </bean>
+</beans>

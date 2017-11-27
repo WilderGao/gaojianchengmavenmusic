@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="gaojianchengmavenmusicTest:war">
+    <output-path>$PROJECT_DIR$/gaojianchengmavenmusicTest/target</output-path>
+    <root id="archive" name="gaojiancheng.mavenmusic.war">
+      <element id="artifact" artifact-name="gaojianchengmavenmusicTest:war exploded" />
+    </root>
+  </artifact>
+</component>
