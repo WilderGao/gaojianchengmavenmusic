@@ -10,7 +10,7 @@ public class User {
     private String userEmail ;
     private String password ;
     private String registerCount ;
-
+    private String faceId;
     public int getUserId() {
         return userId;
     }

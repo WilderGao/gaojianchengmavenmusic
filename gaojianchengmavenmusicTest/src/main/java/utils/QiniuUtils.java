@@ -9,6 +9,7 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,10 +35,15 @@ public final class QiniuUtils {
         //上传管理器
         UploadManager uploadManager = new UploadManager(configuration);
         Auth auth = Auth.create(ACCESS_KEY , SECRET_KEY);
+        StringMap putPolicy = new StringMap();
+        putPolicy.put("callbackUrl", "http://api.example.com/qiniu/upload/callback");
+        putPolicy.put("callbackBody", "{\"key\":\"$(key)\",\"hash\":\"$(etag)\",\"bucket\":\"$(bucket)\",\"fsize\":$(fsize)}");
+        putPolicy.put("callbackBodyType", "application/json");
+        long expireSeconds = 3600*24*365*10;
         //文件名称
         String key = localFilePath.substring(localFilePath.lastIndexOf("\\")+1,localFilePath.length());
-        String upToken = auth.uploadToken(BUCKET);
-
+        String upToken = auth.uploadToken(BUCKET,null,expireSeconds,putPolicy);
+        System.out.println("打印的upToken为"+upToken);
         try {
             Response response = uploadManager.put(localFilePath , key ,upToken);
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(),DefaultPutRet.class);
@@ -66,5 +72,9 @@ public final class QiniuUtils {
         }
         String finalUrl = String.format("%s/%s",DOMAIN_OF_BUCKET,encodingFileName);
         return finalUrl;
+    }
+
+    public static void main(String[] args) {
+        uploadFileToQiniu("D:\\KuGou\\薛之谦 - 意外.mp3");
     }
 }

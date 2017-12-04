@@ -7,17 +7,18 @@
     <cache eviction="LRU" flushInterval="60000"
            size="512" readOnly="true"/>
     <resultMap id="resultSong" type="model.DownloadModel">
-        <result column="customer_id" property="userId"/>
+        <result column="customer_id" property="customerId"/>
         <result column="img_url" property="imgUrl"/>
         <result column="song_name" property="songName"/>
         <result column="singer_name" property="singerName"/>
         <result column="play_url" property="playUrl"/>
+
     </resultMap>
-    <insert id="InsertSongCloud" >
-        INSERT INTO customer_song (customer_id , img_url , song_name , singer_name , play_url)
-        VALUES (#{customer_id},#{img_url},#{song_name},#{singer_name},#{play_url})
+    <insert id="insertSongCloud" >
+        INSERT INTO customer_song (customer_id , img_url , song_name , singer_name , play_url,album_name)
+        VALUES (#{customer_id},#{img_url},#{song_name},#{singer_name},#{play_url},#{album_name})
     </insert>
-    <select id="GetSongs" resultMap="resultSong">
+    <select id="getSongs" resultMap="resultSong">
         SELECT * FROM customer_song
         WHERE customer_id = ${customer_id}
     </select>

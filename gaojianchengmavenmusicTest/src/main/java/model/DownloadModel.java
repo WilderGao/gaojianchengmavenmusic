@@ -1,14 +1,15 @@
 package model;
 
 /**
- * @Author:高键城
+ * @author Administrator
  * @time：
  * @Discription：
  */
 public class DownloadModel {
-    private long userId;
+    private long customerId;
     private String singerName;
     private String songName;
+    private String albumName;
     private String imgUrl;
     private String playUrl;
 
@@ -28,12 +29,20 @@ public class DownloadModel {
         this.songName = songName;
     }
 
-    public long getUserId() {
-        return userId;
+    public String getAlbumName() {
+        return albumName;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
+    }
+
+    public long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(long customerId) {
+        this.customerId = customerId;
     }
 
     public String getImgUrl() {
@@ -50,5 +59,17 @@ public class DownloadModel {
 
     public void setPlayUrl(String playUrl) {
         this.playUrl = playUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "DownloadModel{" +
+                "customerId=" + customerId +
+                ", singerName='" + singerName + '\'' +
+                ", songName='" + songName + '\'' +
+                ", ablumName='" + albumName + '\'' +
+                ", imgUrl='" + imgUrl + '\'' +
+                ", playUrl='" + playUrl + '\'' +
+                '}';
     }
 }

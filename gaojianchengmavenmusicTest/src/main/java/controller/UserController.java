@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 
 /**
- * @Author:高键城
+ * @author Administrator
  * @time：
  * @Discription：
  */
@@ -51,6 +51,7 @@ public class UserController {
         System.out.println("authCode：   "+user.getUserEmail());
 //        //判断让session移除某个键值对
         new Thread(new Runnable() {
+            @Override
             public void run() {
                 long start = System.currentTimeMillis();
                 long end ;
@@ -86,8 +87,6 @@ public class UserController {
     @RequestMapping(value = "/register" , method = RequestMethod.POST)
     @ResponseBody
     public Feedback<Integer> Resign(@RequestBody User user , HttpSession session){
-        System.out.println("resignEmail:   "+user.getUserEmail());
-//        String accountCheck = (String)session.getAttribute(user.getUserEmail());
         String accountCheck = SessionMap.emailMap.get(user.getUserEmail());
         System.out.println(accountCheck+"  session中的验证码\n"+user.getRegisterCount()+"   传过来的验证码");
         Feedback<Integer> feedback = customerService.registerCustomer(user,accountCheck,SessionMap.emailMap);
