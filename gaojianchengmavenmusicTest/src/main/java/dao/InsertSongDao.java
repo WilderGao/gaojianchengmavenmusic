@@ -15,23 +15,16 @@ import java.util.List;
 public interface InsertSongDao {
 
     /**
-     * 将上传的数据内容增加到服务器
-     * @param customerId
-     * @param imgURL
-     * @param songName
-     * @param singerName
-     * @param playURL
-     * @param albumName
+     * 将内容插入到服务器
+     * @param model
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED,rollbackFor = Throwable.class)
-    void insertSongCloud(@Param("customer_id")long customerId , @Param("img_url")String imgURL ,
-                         @Param("song_name") String songName , @Param("singer_name")String singerName,
-                         @Param("play_url")String playURL,@Param("album_name")String albumName);
+    void insertSongCloud(DownloadModel model);
 
     /**
      * 通过id获取下载的歌曲列表
      * @param customerId id
-     * @return
+     * @return 歌曲列表
      */
     List<DownloadModel> getSongs(@Param("customer_id")long customerId);
 }

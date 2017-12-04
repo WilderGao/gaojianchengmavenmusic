@@ -14,9 +14,9 @@
         <result column="play_url" property="playUrl"/>
 
     </resultMap>
-    <insert id="insertSongCloud" >
+    <insert id="insertSongCloud" parameterType="model.User">
         INSERT INTO customer_song (customer_id , img_url , song_name , singer_name , play_url,album_name)
-        VALUES (#{customer_id},#{img_url},#{song_name},#{singer_name},#{play_url},#{album_name})
+        VALUES (#{userId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
     </insert>
     <select id="getSongs" resultMap="resultSong">
         SELECT * FROM customer_song

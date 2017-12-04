@@ -7,6 +7,8 @@
         <result column="id" property="userId"/>
         <result column="customer_email" property="userEmail"/>
         <result column="customer_password" property="password"/>
+        <result column="face_id" property="faceId"/>
+        <result column="customer_name" property="customerName"/>
     </resultMap>
     <select id="SelectUser" resultMap="userResult">
         SELECT * FROM customer
@@ -14,7 +16,12 @@
     </select>
 
     <insert id="InsertUser">
-        INSERT INTO customer (customer_email , customer_password)
-        VALUES (#{email} , #{password})
+        INSERT INTO customer (customer_email , customer_password , face_id , customer_name)
+        VALUES (#{userEmail} , #{password},#{faceId},#{customerName})
     </insert>
+
+    <select id="selectUserByFaceId" resultMap="userResult">
+        SELECT * FROM  customer
+        WHERE face_id = #{face_id}
+    </select>
 </mapper>

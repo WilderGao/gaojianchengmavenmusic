@@ -9,6 +9,14 @@ import org.apache.ibatis.annotations.Param;
  * @Discription：
  */
 public interface LoginDao {
-    public User SelectUser(@Param("customer_email") String customerEmail);
-    public void InsertUser(@Param("email")String email , @Param("password")String password);
+    User SelectUser(@Param("customer_email") String customerEmail);
+    void InsertUser(User user);
+
+    /**
+     * 通过faceId查找客户的信息
+     * @param faceId
+     * @return
+     */
+    User selectUserByFaceId(@Param("face_id") String faceId);
+
 }

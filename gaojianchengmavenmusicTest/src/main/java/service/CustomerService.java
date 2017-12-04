@@ -1,6 +1,7 @@
 package service;
 
 import model.Feedback;
+import model.ReceiveTo;
 import model.User;
 
 import javax.servlet.http.HttpSession;
@@ -12,8 +13,22 @@ import java.util.Map;
  * @Discription：
  */
 public interface CustomerService {
-    public Feedback loginCustomer(User user);
-    public int GetAccount(String authCode);
-    //对注册的账户进行判断
-    public Feedback registerCustomer(User user , String accountCheck , Map<String , String> map);
+
+    Feedback loginCustomer(User user);
+
+    /**
+     * 得到验证码
+     * @param authCode
+     * @return
+     */
+    int GetAccount(String authCode);
+
+    /**
+     * 判断注册信息的service
+     * @param receiveTo
+     * @param accountCheck
+     * @param map
+     * @return
+     */
+    Feedback registerCustomer(ReceiveTo<User> receiveTo, String accountCheck , Map<String , String> map);
 }

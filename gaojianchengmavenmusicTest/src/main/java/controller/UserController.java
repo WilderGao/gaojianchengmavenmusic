@@ -1,9 +1,8 @@
 package controller;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import enums.StatusEnum;
-import model.Feedback;
-import model.SessionMap;
-import model.User;
+import model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +40,7 @@ public class UserController {
 
     @RequestMapping(value = "/getcount")
     @ResponseBody
-    public Feedback<User> GetCount(HttpServletRequest request ) throws UnsupportedEncodingException, MessagingException {
+    public Feedback<User> GetCount(HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
         Feedback<User> feedback = new Feedback<>();
         final User user = new User();
         user.setUserEmail(request.getParameter("userEmail"));
@@ -57,7 +56,6 @@ public class UserController {
                 long end ;
                 while(true){
                     end = System.currentTimeMillis();
-                    System.out.println(end - start);
                     if ((end - start)>1000*60*2) {
                         SessionMap.emailMap.remove(user.getUserEmail());
                         break;
@@ -86,10 +84,12 @@ public class UserController {
 
     @RequestMapping(value = "/register" , method = RequestMethod.POST)
     @ResponseBody
-    public Feedback<Integer> Resign(@RequestBody User user , HttpSession session){
-        String accountCheck = SessionMap.emailMap.get(user.getUserEmail());
-        System.out.println(accountCheck+"  session中的验证码\n"+user.getRegisterCount()+"   传过来的验证码");
-        Feedback<Integer> feedback = customerService.registerCustomer(user,accountCheck,SessionMap.emailMap);
-        return feedback ;
-    }
+    public Feedback<Integer> Resign(@RequestBody ReceiveTo<User> receiveTo, HttpSession session){
+            User user = receiveTo.getData();
+            String accountCheck = SessionMap.emailMap.get(user.getUserEmail());
+            System.out.println(accountCheck + "  session中的验证码\n" + user.getRegisterCount() + "   传过来的验证码");
+            Feedback<Integer> feedback = customerService.registerCustomer(receiveTo, accountCheck, SessionMap.emailMap);
+            return feedback;
+        }
+
 }

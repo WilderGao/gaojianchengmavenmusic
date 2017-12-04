@@ -4,6 +4,7 @@ import com.alibaba.druid.support.spring.stat.annotation.Stat;
 import dao.LoginDao;
 import enums.StatusEnum;
 import model.Feedback;
+import model.ReceiveTo;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,8 @@ import java.util.Map;
  */
 @Service
 public class CustomerServiceImpl implements CustomerService {
+    private final int FACE_REGISTER = 1;
+    private final int NORMAL_REGISTER = 2;
     private LoginDao loginDao;
     private Feedback<Integer> feedback;
 
@@ -71,28 +74,53 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Feedback registerCustomer(User user , String accountCheck , Map<String , String> map) {
+    public Feedback registerCustomer(ReceiveTo<User> receiveTo, String accountCheck , Map<String , String> map) {
         Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
         Feedback<String> feedback = new Feedback<>();
-        if (!user.getRegisterCount().equals(accountCheck)){
-            LOGGER.error("验证码错误");
-            feedback.setStatus(StatusEnum.AUTH_NULL.getState());
-            return feedback;
-        }
-        User userCheck = loginDao.SelectUser(user.getUserEmail());
-        if (userCheck != null) {
-            feedback.setStatus(StatusEnum.ACCOUNT_ALREADY_EXIST.getState());
-            return feedback;
-        }else {
-            try {
-                    loginDao.InsertUser(user.getUserEmail(), user.getPassword());
-//                    session.removeAttribute(user.getUserEmail());
+        //首先要判断是刷脸注册还是普通注册
+        int method = receiveTo.getMethod();
+        User user = receiveTo.getData();
+        if (method == NORMAL_REGISTER ) {
+            //判断是普通注册
+            if (!user.getRegisterCount().equals(accountCheck)) {
+                LOGGER.error("验证码错误");
+                feedback.setStatus(StatusEnum.AUTH_NULL.getState());
+                return feedback;
+            }else if (user.getCustomerName() == null){
+                LOGGER.error("没有填写用户名");
+                feedback.setStatus(StatusEnum.NAME_NULL_ERROR.getState());
+                return feedback;
+            }
+            User userCheck = loginDao.SelectUser(user.getUserEmail());
+            if (userCheck != null) {
+                feedback.setStatus(StatusEnum.ACCOUNT_ALREADY_EXIST.getState());
+                return feedback;
+            } else {
+                try {
+                    loginDao.InsertUser(user);
                     map.remove(user.getUserEmail());
                     feedback.setStatus(StatusEnum.OK.getState());
                     return feedback;
-            }catch (Exception e){
-                throw new RuntimeException("insert Fail "+e);
+                } catch (Exception e) {
+                    throw new RuntimeException("insert Fail " + e);
+                }
             }
+        }else if (method == FACE_REGISTER){
+            //判断是刷脸注册
+            User checkUserByFaceId = loginDao.selectUserByFaceId(user.getFaceId());
+            if (checkUserByFaceId != null){
+                feedback.setStatus(StatusEnum.ACCOUNT_ALREADY_EXIST.getState());
+                return feedback;
+            }else {
+                loginDao.InsertUser(user);
+                //刷脸注册不需要验证码
+                feedback.setStatus(StatusEnum.OK.getState());
+                return feedback;
+            }
+        }else {
+            //都不符合表明注册参数有误
+            feedback.setStatus(StatusEnum.REGISTER_METHOD_ERROR.getState());
+            return feedback;
         }
     }
 }

@@ -1,7 +1,7 @@
 package model;
 
 /**
- * @Author:高键城
+ * @author Administrator
  * @time：
  * @Discription：
  */
@@ -9,6 +9,7 @@ public class User {
     private int userId;
     private String userEmail ;
     private String password ;
+    private String customerName;
     private String registerCount ;
     private String faceId;
     public int getUserId() {
@@ -43,13 +44,31 @@ public class User {
         this.registerCount = registerCount;
     }
 
+    public String getFaceId() {
+        return faceId;
+    }
+
+    public void setFaceId(String faceId) {
+        this.faceId = faceId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
                 ", userEmail='" + userEmail + '\'' +
                 ", password='" + password + '\'' +
+                ", customerName='" + customerName + '\'' +
                 ", registerCount='" + registerCount + '\'' +
+                ", faceId='" + faceId + '\'' +
                 '}';
     }
 }

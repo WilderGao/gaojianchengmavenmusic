@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import service.DownloadService;
 
 import java.io.*;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -95,8 +94,7 @@ public class DownloadServiceImpl implements DownloadService {
                         { checkExist = 1;}
                     }
                     if (checkExist != 1)
-                    { insertSongDao.insertSongCloud(downloadModel.getCustomerId(), ImgPath, downloadModel.getSongName(),
-                                downloadModel.getSingerName(), PlayPath,downloadModel.getAlbumName());}
+                    { insertSongDao.insertSongCloud(downloadModel);}
                 }
             }catch (Exception e){
                 System.out.println("插入数据库发生错误");
