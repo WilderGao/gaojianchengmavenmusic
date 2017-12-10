@@ -1,16 +1,17 @@
 package model;
 
 /**
- * @Author:高键城
+ * @author Administrator
  * @time：
  * @Discription：
  */
 public class WishModel {
     private int wishId;
-    private String customerEmail;
+    private int customerId;
     private String songName;
     private String singerName;
     private String albumName;
+    private String customerName;
     private int wishState;
 
     public int getWishId() {
@@ -21,12 +22,12 @@ public class WishModel {
         this.wishId = wishId;
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public String getSongName() {
@@ -61,14 +62,23 @@ public class WishModel {
         this.wishState = wishState;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
     @Override
     public String toString() {
         return "WishModel{" +
                 "wishId=" + wishId +
-                ", customerEmail='" + customerEmail + '\'' +
+                ", customerId=" + customerId +
                 ", songName='" + songName + '\'' +
                 ", singerName='" + singerName + '\'' +
-                ", ablumName='" + albumName + '\'' +
+                ", albumName='" + albumName + '\'' +
+                ", customerName='" + customerName + '\'' +
                 ", wishState=" + wishState +
                 '}';
     }

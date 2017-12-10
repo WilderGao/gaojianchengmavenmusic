@@ -7,7 +7,7 @@ package enums;
  */
 public enum StatusEnum {
     OK(1),         //返回正常
-    REGISTER_METHOD_ERROR(50),     //注册参数有误
+    REGISTER_METHOD_ERROR(50),     //参数有误
     USER_ERROR(110),    //传来的User为空
     ACCOUNT_NOT_EXIST(250),     //账户不存在
     PASSWORD_ERROR(300),        //密码错误
@@ -21,7 +21,8 @@ public enum StatusEnum {
     ALREADY_LASTEST(780),          //已经是最新版本
     VERSION_ERROR(790),             //版本号异常
     UPLOAD_CLOUD_ERROR(800),        //上传云服务器有误
-    PAGE_NUM_ERROR(810);            //页码数有误
+    PAGE_NUM_ERROR(810),            //页码数有误
+    METHOD_ERROR(444);              //传入参数有误
     private int state;
 
     StatusEnum(int state) {

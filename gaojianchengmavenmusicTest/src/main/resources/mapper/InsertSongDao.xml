@@ -12,14 +12,19 @@
         <result column="song_name" property="songName"/>
         <result column="singer_name" property="singerName"/>
         <result column="play_url" property="playUrl"/>
-
     </resultMap>
     <insert id="insertSongCloud" parameterType="model.User">
-        INSERT INTO customer_song (customer_id , img_url , song_name , singer_name , play_url,album_name)
-        VALUES (#{userId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
+        INSERT INTO
+        customer_song (customer_id , img_url , song_name , singer_name , play_url,album_name)
+        VALUES
+        (#{userId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
     </insert>
     <select id="getSongs" resultMap="resultSong">
         SELECT * FROM customer_song
-        WHERE customer_id = ${customer_id}
+        <where>
+            <if test="customer_id != 0">
+                customer_id = ${customer_id}
+            </if>
+        </where>
     </select>
 </mapper>

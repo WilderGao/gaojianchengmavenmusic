@@ -3,6 +3,7 @@ package service.Impl;
 import com.github.pagehelper.PageHelper;
 import dao.SongDao;
 import enums.StatusEnum;
+import model.DownloadModel;
 import model.Feedback;
 import model.WishModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,4 +37,18 @@ public class SongServiceImpl implements SongService {
             return feedback;
         }
     }
+
+    @Override
+    public Feedback<Integer> uploadSongService(DownloadModel downloadModel) {
+        Feedback<Integer> feedback = new Feedback<>();
+        if (null == downloadModel || downloadModel.getCustomerId() == 0 || null == downloadModel.getPlayUrl()){
+            //获得内容为空，没有对应用户的Id，歌曲对应的url为空的时候都判断为错误
+            feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
+            return feedback;
+        }else {
+
+        }
+    }
+
+
 }

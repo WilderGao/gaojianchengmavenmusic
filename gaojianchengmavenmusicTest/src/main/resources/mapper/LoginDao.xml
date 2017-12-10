@@ -12,7 +12,11 @@
     </resultMap>
     <select id="SelectUser" resultMap="userResult">
         SELECT * FROM customer
-        WHERE customer_email = #{customer_email}
+        <where>
+            <if test="customer_email != null">
+                customer_email = #{customer_email}
+            </if>
+        </where>
     </select>
 
     <insert id="InsertUser">
@@ -22,6 +26,10 @@
 
     <select id="selectUserByFaceId" resultMap="userResult">
         SELECT * FROM  customer
-        WHERE face_id = #{face_id}
+        <where>
+            <if test="face_id != 0">
+                WHERE face_id = #{face_id}
+            </if>
+        </where>
     </select>
 </mapper>

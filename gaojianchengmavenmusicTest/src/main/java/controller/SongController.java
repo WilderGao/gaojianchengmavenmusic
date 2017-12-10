@@ -1,9 +1,11 @@
 package controller;
 
+import model.DownloadModel;
 import model.Feedback;
 import model.WishModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,5 +32,10 @@ public class SongController {
     @ResponseBody
     public Feedback<List<WishModel>> getWishList(int pageNum , int pageSize){
         return songService.handleWish(pageNum,pageSize);
+    }
+
+    @PostMapping("/upload")
+    public Feedback<Integer> uploadSong(DownloadModel downloadModel){
+
     }
 }

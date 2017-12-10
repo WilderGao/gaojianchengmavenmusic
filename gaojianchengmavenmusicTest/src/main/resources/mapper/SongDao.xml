@@ -10,8 +10,11 @@
         <result column="singer_name" property="singerName"/>
         <result column="album_name" property="albumName"/>
         <result column="wish_state" property="wishState"/>
+        <result column="customer_"
     </resultMap>
     <select id="getWishList" resultMap="wishResult">
-        SELECT * FROM wish
+        SELECT  FROM wish
+        ORDER BY
     </select>
+    <select id="uploadSong"
 </mapper>
