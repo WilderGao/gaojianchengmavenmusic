@@ -258,6 +258,15 @@
       <version>5.1.1</version>
     </dependency>
 
+    <!--加入netty框架实验-->
+    <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>4.1.16.Final</version>
+    </dependency>
+
+
   </dependencies>
   <build>
     <finalName>gaojiancheng.mavenmusic</finalName>
