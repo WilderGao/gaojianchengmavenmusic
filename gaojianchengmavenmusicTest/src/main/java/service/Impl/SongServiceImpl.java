@@ -8,6 +8,7 @@ import model.Feedback;
 import model.WishModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.SongService;
 
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.List;
  * @Discription：
  */
 @Service
+//设置事务
+@Transactional(rollbackFor = Exception.class)
 public class SongServiceImpl implements SongService {
     @Autowired
     private SongDao songDao;
@@ -46,7 +49,9 @@ public class SongServiceImpl implements SongService {
             feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
             return feedback;
         }else {
-
+            songDao.uploadSong(downloadModel);
+            feedback.setStatus(StatusEnum.OK.getState());
+            return feedback;
         }
     }
 

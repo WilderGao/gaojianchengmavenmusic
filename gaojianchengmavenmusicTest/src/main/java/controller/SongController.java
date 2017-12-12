@@ -5,16 +5,13 @@ import model.Feedback;
 import model.WishModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import service.Impl.SongServiceImpl;
 
 import java.util.List;
 
 /**
- * @Author:高键城
+ * @author Administrator
  * @time：
  * @Discription：
  */
@@ -28,14 +25,17 @@ public class SongController {
      * @param pageNum   第几页
      * @param pageSize  一页的数量
      */
-    @RequestMapping(value = "wantlist",method = RequestMethod.GET)
+    @RequestMapping(value = "/wantlist",method = RequestMethod.GET)
     @ResponseBody
     public Feedback<List<WishModel>> getWishList(int pageNum , int pageSize){
         return songService.handleWish(pageNum,pageSize);
     }
 
-    @PostMapping("/upload")
-    public Feedback<Integer> uploadSong(DownloadModel downloadModel){
-
+    @RequestMapping(value = "/upload")
+    @ResponseBody
+    public Feedback<Integer> uploadSong(@RequestBody DownloadModel downloadModel){
+        System.out.println("downloadModel"+downloadModel);
+        Feedback<Integer> feedback = songService.uploadSongService(downloadModel);
+        return feedback;
     }
 }

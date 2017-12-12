@@ -3,6 +3,7 @@ package controller;
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import enums.StatusEnum;
 import model.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -33,17 +34,17 @@ public class UserController {
 
     @RequestMapping(value = "/login" , method = RequestMethod.POST)
     @ResponseBody
-    public Feedback<Integer> Login(@RequestBody @RequestParam("user") User user){
+    public Feedback<Integer> Login(@RequestBody User user){
         Feedback<Integer> feedback = customerService.loginCustomer(user);
         return feedback;
     }
 
     @RequestMapping(value = "/getcount")
     @ResponseBody
-    public Feedback<User> GetCount(HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+    public Feedback<User> GetCount(@Param("userEmail") String userEmail) throws UnsupportedEncodingException, MessagingException {
         Feedback<User> feedback = new Feedback<>();
         final User user = new User();
-        user.setUserEmail(request.getParameter("userEmail"));
+        user.setUserEmail(userEmail);
         //获得验证码
         String authCode = CountUtils.getRandomString();
         SessionMap.emailMap.put(user.getUserEmail(),authCode);

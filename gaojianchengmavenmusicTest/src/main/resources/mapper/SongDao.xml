@@ -5,16 +5,19 @@
 <mapper namespace="dao.SongDao">
     <resultMap id="wishResult" type="model.WishModel">
         <result column="id" property="wishId"/>
-        <result column="customer_email" property="customerEmail"/>
+        <result column="customer_id" property="customerId"/>
         <result column="song_name" property="songName"/>
         <result column="singer_name" property="singerName"/>
         <result column="album_name" property="albumName"/>
         <result column="wish_state" property="wishState"/>
-        <result column="customer_"
     </resultMap>
     <select id="getWishList" resultMap="wishResult">
         SELECT  FROM wish
         ORDER BY
     </select>
-    <select id="uploadSong"
+    <insert id="uploadSong" parameterType="model.DownloadModel">
+        INSERT INTO customer_song(customer_id,img_url,song_name,
+        singer_name,play_url,album_name)
+        VALUES (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
+    </insert>
 </mapper>

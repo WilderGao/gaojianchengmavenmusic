@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.DownloadService;
 
 import java.io.*;
@@ -19,6 +20,7 @@ import java.util.List;
  * @Discription：
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class DownloadServiceImpl implements DownloadService {
     private InsertSongDao insertSongDao;
     Feedback<Integer> feedback = new Feedback<>();

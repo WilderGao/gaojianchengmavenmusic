@@ -1,6 +1,7 @@
 package controller;
 
 import model.Feedback;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,7 @@ public class UpdateController {
     }
     @RequestMapping(value = "/version",method = RequestMethod.GET)
     @ResponseBody
-    public Feedback<String> VersionCheck(HttpServletRequest request){
-        //获取版本号
-        int versionCode = Integer.parseInt(request.getParameter("versionCode"));
+    public Feedback<String> VersionCheck(@Param("versionCode") int versionCode){
         System.out.println(versionCode+"版本号");
         feedback = updateService.CheckVersion(versionCode);
         return feedback;

@@ -1,5 +1,6 @@
 package dao;
 
+import model.DownloadModel;
 import model.WishModel;
 
 import java.util.List;
@@ -15,4 +16,11 @@ public interface SongDao {
      * @return
      */
     List<WishModel> getWishList();
+
+    /**
+     * 上传歌曲
+     * @param model 歌曲模型
+     * @return
+     */
+    int uploadSong(DownloadModel model);
 }

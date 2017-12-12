@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.CustomerService;
 import utils.CountUtils;
 
@@ -22,6 +23,7 @@ import java.util.Map;
  * @Discription：
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class CustomerServiceImpl implements CustomerService {
     private final int FACE_REGISTER = 1;
     private final int NORMAL_REGISTER = 2;
@@ -33,6 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
         this.loginDao = loginDao;
     }
 
+    @Override
     public Feedback loginCustomer(User user) {
       if (user == null){
           feedback = new Feedback<>();

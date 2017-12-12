@@ -3,6 +3,7 @@ package controller;
 import enums.StatusEnum;
 import model.DownloadModel;
 import model.Feedback;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @Author:高键城
+ * @author Administrator
  * @time：
  * @Discription：
  */
@@ -49,8 +50,7 @@ public class DownloadController {
 
     @RequestMapping(value = "/detail",method = RequestMethod.GET)
     @ResponseBody
-    public Feedback<List<DownloadModel>> GetCustomerSongs( HttpServletRequest request){
-        int userId = Integer.parseInt(request.getParameter("userId"));
+    public Feedback<List<DownloadModel>> GetCustomerSongs(@Param("userId") int userId){
         Feedback<List<DownloadModel>> feedback = downloadService.GetSongsList((long)userId);
         return feedback;
     }
