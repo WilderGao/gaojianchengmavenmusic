@@ -11,13 +11,14 @@
         <result column="img_url" property="imgUrl"/>
         <result column="song_name" property="songName"/>
         <result column="singer_name" property="singerName"/>
+        <result column="album_name" property="albumName"/>
         <result column="play_url" property="playUrl"/>
     </resultMap>
-    <insert id="insertSongCloud" parameterType="model.User">
+    <insert id="insertSongCloud" parameterType="model.DownloadModel">
         INSERT INTO
         customer_song (customer_id , img_url , song_name , singer_name , play_url,album_name)
         VALUES
-        (#{userId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
+        (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
     </insert>
     <select id="getSongs" resultMap="resultSong">
         SELECT * FROM customer_song
@@ -26,5 +27,9 @@
                 customer_id = ${customer_id}
             </if>
         </where>
+    </select>
+    <select id="getMavenMusicSongs" resultMap="resultSong">
+        SELECT * FROM customer_song
+        ORDER BY song_name
     </select>
 </mapper>

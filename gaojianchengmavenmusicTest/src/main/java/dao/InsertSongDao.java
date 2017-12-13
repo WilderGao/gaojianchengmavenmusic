@@ -18,7 +18,6 @@ public interface InsertSongDao {
      * 将内容插入到服务器
      * @param model
      */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED,rollbackFor = Throwable.class)
     void insertSongCloud(DownloadModel model);
 
     /**
@@ -27,4 +26,10 @@ public interface InsertSongDao {
      * @return 歌曲列表
      */
     List<DownloadModel> getSongs(@Param("customer_id")long customerId);
+
+    /**
+     * 获得服务器音乐区的歌曲信息
+     * @return
+     */
+    List<DownloadModel> getMavenMusicSongs();
 }

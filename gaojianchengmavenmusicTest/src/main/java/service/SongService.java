@@ -26,4 +26,21 @@ public interface SongService {
      * @return
      */
     Feedback<Integer> uploadSongService(DownloadModel downloadModel);
+
+    /**
+     * 实现愿望
+     * @param wishModel 愿望类
+     * @return
+     */
+    Feedback<String> achieveSongService(WishModel wishModel);
+
+    /**
+     * 获得服务器的音乐列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    Feedback<List<DownloadModel>> getMavenMusic(int pageNum , int pageSize);
+
+    Feedback<List<WishModel>> selectUserSongService(int userId , int pageNum , int pageSize);
 }

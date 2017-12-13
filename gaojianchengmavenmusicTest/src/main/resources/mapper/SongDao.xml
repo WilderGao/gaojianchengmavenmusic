@@ -11,13 +11,56 @@
         <result column="album_name" property="albumName"/>
         <result column="wish_state" property="wishState"/>
     </resultMap>
+
+    <resultMap id="downLoadResult" type="model.DownloadModel">
+        <result column="customer_id" property="customerId"/>
+        <result column="song_name" property="songName"/>
+        <result column="singer_name" property="singerName"/>
+        <result column="album_name" property="albumName"/>
+    </resultMap>
+
+    <!--获取愿望清单-->
     <select id="getWishList" resultMap="wishResult">
-        SELECT  FROM wish
+        SELECT * FROM wish
         ORDER BY
     </select>
+
     <insert id="uploadSong" parameterType="model.DownloadModel">
         INSERT INTO customer_song(customer_id,img_url,song_name,
         singer_name,play_url,album_name)
         VALUES (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
     </insert>
+
+    <!--上传了一首歌，更改一下状态-->
+    <update id="updateWishState" parameterType="model.WishModel">
+        UPDATE wish
+        <trim prefix="set">
+        <if test="wishId != null">wish_state = 1</if>
+        </trim>
+        <where>
+            id = #{wishId}
+        </where>
+    </update>
+
+    <!--获得一条愿望，id为愿望Id-->
+    <select id="selectWishById" parameterType="java.lang.Integer" resultMap="downLoadResult">
+        SELECT * FROM wish
+        <where>
+            <if test="wishId != 0">
+                id = #{wishId}
+            </if>
+        </where>
+    </select>
+
+    <!--获得一系列关于这个人的愿望，Id为账户Id-->
+    <select id="selectWishAboutUser" parameterType="java.lang.Integer" resultMap="wishResult">
+        SELECT * FROM wish
+        <where>
+            <if test="userId > 0">
+                customer_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+
 </mapper>

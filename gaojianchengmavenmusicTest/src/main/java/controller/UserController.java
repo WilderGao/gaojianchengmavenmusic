@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import service.Impl.CustomerServiceImpl;
+import service.Impl.SongServiceImpl;
 import utils.CountUtils;
 import utils.MailUtils;
 
@@ -15,6 +16,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * @author Administrator
@@ -26,10 +28,12 @@ import java.io.UnsupportedEncodingException;
 public class UserController {
 
     private final CustomerServiceImpl customerService;
+    private final SongServiceImpl songService;
 
     @Autowired(required = false)
-    public UserController(CustomerServiceImpl customerService) {
+    public UserController(CustomerServiceImpl customerService,SongServiceImpl songService) {
         this.customerService = customerService;
+        this.songService = songService;
     }
 
     @RequestMapping(value = "/login" , method = RequestMethod.POST)
@@ -48,7 +52,6 @@ public class UserController {
         //获得验证码
         String authCode = CountUtils.getRandomString();
         SessionMap.emailMap.put(user.getUserEmail(),authCode);
-        System.out.println("authCode：   "+user.getUserEmail());
 //        //判断让session移除某个键值对
         new Thread(new Runnable() {
             @Override
@@ -88,9 +91,14 @@ public class UserController {
     public Feedback<Integer> Resign(@RequestBody ReceiveTo<User> receiveTo, HttpSession session){
             User user = receiveTo.getData();
             String accountCheck = SessionMap.emailMap.get(user.getUserEmail());
-            System.out.println(accountCheck + "  session中的验证码\n" + user.getRegisterCount() + "   传过来的验证码");
             Feedback<Integer> feedback = customerService.registerCustomer(receiveTo, accountCheck, SessionMap.emailMap);
             return feedback;
         }
+
+    public Feedback<List<WishModel>> wantList(@Param("userId")int userId,
+                                              @Param("pageNum")int pageNum,
+                                              @Param("pageSize")int pageSize){
+        return songService.selectUserSongService(userId,pageNum,pageSize);
+    }
 
 }

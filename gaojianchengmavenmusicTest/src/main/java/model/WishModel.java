@@ -12,6 +12,7 @@ public class WishModel {
     private String singerName;
     private String albumName;
     private String customerName;
+    private String songURL;
     private int wishState;
 
     public int getWishId() {
@@ -70,6 +71,14 @@ public class WishModel {
         this.customerName = customerName;
     }
 
+    public String getSongURL() {
+        return songURL;
+    }
+
+    public void setSongURL(String songURL) {
+        this.songURL = songURL;
+    }
+
     @Override
     public String toString() {
         return "WishModel{" +
@@ -79,6 +88,7 @@ public class WishModel {
                 ", singerName='" + singerName + '\'' +
                 ", albumName='" + albumName + '\'' +
                 ", customerName='" + customerName + '\'' +
+                ", songURL='" + songURL + '\'' +
                 ", wishState=" + wishState +
                 '}';
     }

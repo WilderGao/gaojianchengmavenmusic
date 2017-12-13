@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
- * @Author:高键城
+ * @author Administrator
  * @time：
  * @Discription：
  */
@@ -29,7 +29,7 @@ public final class MailUtils {
      */
     public static boolean sent(String receiveMailAccount , String emailMessage) throws UnsupportedEncodingException, MessagingException {
         //创建参数配置
-        Properties props = new Properties();// 参数配置
+        Properties props = new Properties();
         props.setProperty("mail.transport.protocol", "smtp");   // 使用的协议（JavaMail规范要求）
         props.setProperty("mail.smtp.host", myEmailSMTPHost);   // 发件人的邮箱的 SMTP 服务器地址
         props.setProperty("mail.smtp.auth", "true");
@@ -45,7 +45,7 @@ public final class MailUtils {
         session.setDebug(true);
 
         //创建一封邮件
-        MimeMessage mimeMessage = creatMimeMessage(session , myEmailAccount , receiveMailAccount , emailMessage);
+        MimeMessage mimeMessage = createMimeMessage(session , myEmailAccount , receiveMailAccount , emailMessage);
         if (mimeMessage == null) {
             throw new RuntimeException("创建邮件失败");
         }else {
@@ -60,7 +60,7 @@ public final class MailUtils {
 
     }
 
-    public static MimeMessage creatMimeMessage(Session session , String sendMail , String receiveMail , String emailMessage) throws UnsupportedEncodingException, MessagingException {
+    public static MimeMessage createMimeMessage(Session session , String sendMail , String receiveMail , String emailMessage) throws UnsupportedEncodingException, MessagingException {
         //1、创建一封邮件
         MimeMessage mimeMessage = new MimeMessage(session);
         String mailSender = "来自Maven音乐团队";
