@@ -89,29 +89,45 @@ public class SongServiceImpl implements SongService {
         return feedback;
     }
 
+
     @Override
-    public Feedback<List<DownloadModel>> getMavenMusic(int pageNum, int pageSize) {
+    public Feedback<List<DownloadModel>> getMavenMusic(int pageNum, int pageSize , String singerName) {
         Feedback<List<DownloadModel>> feedback = new Feedback<>();
-        if (pageNum <= 0 || pageSize <= 0){
+        if (pageNum <= 0 || pageSize <= 0) {
             feedback.setStatus(StatusEnum.PAGE_NUM_ERROR.getState());
             return feedback;
-        }else {
+        } else {
             //开启分页
-            PageHelper.startPage(pageNum,pageSize);
-            //查询数据库
+            PageHelper.startPage(pageNum, pageSize);
             try {
-                List<DownloadModel> downloadModelList = insertSongDao.getMavenMusicSongs();
-                if (null ==downloadModelList){
-                    feedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
+                if (null == singerName) {
+                    //名称为空的时候说明要获得的是歌手的名称
+                    //获得所有歌手的信息集合
+                    LOGGER.info("========要获得歌手信息=======");
+                    List<DownloadModel> singerList = insertSongDao.selectMavenSinger();
+                    if (null == singerList) {
+                        feedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
+                    } else {
+                        feedback.setStatus(StatusEnum.OK.getState());
+                        feedback.setData(singerList);
+                    }
                     return feedback;
-                }else {
-                    feedback.setStatus(StatusEnum.OK.getState());
-                    feedback.setData(downloadModelList);
-                    return feedback;
+                } else {
+                    //查询数据库
+                    List<DownloadModel> downloadModelList = insertSongDao.getMavenMusicSongs(singerName);
+                    if (null == downloadModelList) {
+                        feedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
+                        return feedback;
+                    } else {
+                        feedback.setStatus(StatusEnum.OK.getState());
+                        feedback.setData(downloadModelList);
+                        return feedback;
+                    }
                 }
-            }catch (Exception e){
+            }catch(Exception e){
                 LOGGER.error("======使用数据库出现错误======");
                 feedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
+                e.printStackTrace();
                 return feedback;
             }
         }

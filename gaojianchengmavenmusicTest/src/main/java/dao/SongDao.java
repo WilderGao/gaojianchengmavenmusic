@@ -45,4 +45,5 @@ public interface SongDao {
      * @return
      */
     List<WishModel> selectWishAboutUser(@Param("userId") int userId);
+
 }

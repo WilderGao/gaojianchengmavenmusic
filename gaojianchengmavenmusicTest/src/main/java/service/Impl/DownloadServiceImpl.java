@@ -1,5 +1,6 @@
 package service.Impl;
 
+import com.github.pagehelper.PageHelper;
 import dao.InsertSongDao;
 import enums.StatusEnum;
 import model.DownloadModel;
@@ -110,11 +111,18 @@ public class DownloadServiceImpl implements DownloadService {
     }
 
     @Override
-    public Feedback GetSongsList(long customerId) {
-        List<DownloadModel> downloadModel = insertSongDao.getSongs(customerId);
+    public Feedback GetSongsList(int pageNum , int pageSize , long customerId) {
         Feedback<List<DownloadModel>> feedback = new Feedback<>();
-        feedback.setData(downloadModel);
-        feedback.setStatus(StatusEnum.OK.getState());
-        return feedback;
+        if (pageNum <= 0 || pageSize <= 0) {
+            feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
+            return feedback;
+        }else {
+            //开始分页
+            PageHelper.startPage(pageNum, pageSize);
+            List<DownloadModel> downloadModel = insertSongDao.getSongs(customerId);
+            feedback.setData(downloadModel);
+            feedback.setStatus(StatusEnum.OK.getState());
+            return feedback;
+        }
     }
 }

@@ -35,12 +35,20 @@ public interface SongService {
     Feedback<String> achieveSongService(WishModel wishModel);
 
     /**
-     * 获得服务器的音乐列表
+     * 获得歌手或者歌手的歌曲
+     * @param pageNum
+     * @param pageSize
+     * @param singerName
+     * @return
+     */
+    Feedback<List<DownloadModel>> getMavenMusic(int pageNum , int pageSize , String singerName);
+
+    /**
+     * 获得某个用户下载的歌曲
+     * @param userId
      * @param pageNum
      * @param pageSize
      * @return
      */
-    Feedback<List<DownloadModel>> getMavenMusic(int pageNum , int pageSize);
-
     Feedback<List<WishModel>> selectUserSongService(int userId , int pageNum , int pageSize);
 }

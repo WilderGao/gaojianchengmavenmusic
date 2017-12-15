@@ -20,9 +20,18 @@
     </resultMap>
 
     <!--获取愿望清单-->
-    <select id="getWishList" resultMap="wishResult">
-        SELECT * FROM wish
-        ORDER BY
+    <select id="getWishList" resultType="model.WishModel">
+        SELECT customer.customer_name AS 'customerName',
+        wish.id AS 'wishId',
+        wish.song_name AS 'songName' ,
+        wish.album_name AS 'albumName' ,
+        wish.customer_id AS 'customerId',
+        wish.wish_state AS 'wishState' ,
+        wish.singer_name AS 'singerName'
+        FROM wish
+        LEFT JOIN customer ON customer.customer_id = wish.customer_id
+        WHERE wish.customer_id = 3 AND wish.wish_state != 1
+        ORDER BY id DESC
     </select>
 
     <insert id="uploadSong" parameterType="model.DownloadModel">
@@ -41,7 +50,7 @@
             id = #{wishId}
         </where>
     </update>
-
+na
     <!--获得一条愿望，id为愿望Id-->
     <select id="selectWishById" parameterType="java.lang.Integer" resultMap="downLoadResult">
         SELECT * FROM wish

@@ -20,6 +20,7 @@
         VALUES
         (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
     </insert>
+    <!--获得一个用户的下载歌曲-->
     <select id="getSongs" resultMap="resultSong">
         SELECT * FROM customer_song
         <where>
@@ -28,8 +29,25 @@
             </if>
         </where>
     </select>
+    <!--获得一个歌手的所有歌曲-->
     <select id="getMavenMusicSongs" resultMap="resultSong">
-        SELECT * FROM customer_song
-        ORDER BY song_name
+        SELECT DISTINCT * FROM customer_song
+        <where>
+            <if test="singerName != null">
+                singer_name = #{singerName}
+            </if>
+        </where>
+        ORDER BY
+        CONVERT (song_name USING gbk)ASC
+    </select>
+
+    <!-- 获得一系列歌手的名称-->
+    <select id="selectMavenSinger" resultMap="resultSong">
+        SELECT DISTINCT singer_name ,
+        img_url
+        FROM
+        customer_song
+        ORDER BY
+        CONVERT (singer_name USING gbk)ASC
     </select>
 </mapper>

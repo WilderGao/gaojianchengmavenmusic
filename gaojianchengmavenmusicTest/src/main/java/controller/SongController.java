@@ -62,10 +62,10 @@ public class SongController {
      * @param pageSize  一页有几个数据
      * @return
      */
-    @GetMapping(value = "/mavenmusic")
+    @GetMapping(value = "/servermusic")
     @ResponseBody
-    public Feedback<List<DownloadModel>> getMavenMusic(@Param("pageNum")int pageNum , @Param("pageSize")int pageSize){
-        System.out.println("pageNum:"+pageNum+"pageSize:"+pageSize);
-        return songService.getMavenMusic(pageNum,pageSize);
+    public Feedback<List<DownloadModel>> getMavenMusic(@Param("pageNum")int pageNum , @Param("pageSize")int pageSize , @Param("singerName")String singerName){
+        System.out.println("pageNum:"+pageNum+"pageSize:"+pageSize+"singerName:"+singerName);
+        return songService.getMavenMusic(pageNum,pageSize,singerName);
     }
 }

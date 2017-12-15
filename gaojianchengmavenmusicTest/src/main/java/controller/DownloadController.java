@@ -50,8 +50,8 @@ public class DownloadController {
 
     @RequestMapping(value = "/detail",method = RequestMethod.GET)
     @ResponseBody
-    public Feedback<List<DownloadModel>> GetCustomerSongs(@Param("userId") int userId){
-        Feedback<List<DownloadModel>> feedback = downloadService.GetSongsList((long)userId);
+    public Feedback<List<DownloadModel>> GetCustomerSongs(@Param("pageNum") int pageNum , @Param("pageSize") int pageSize , @Param("userId") int userId){
+        Feedback<List<DownloadModel>> feedback = downloadService.GetSongsList(pageNum , pageSize , (long)userId);
         return feedback;
     }
 }
