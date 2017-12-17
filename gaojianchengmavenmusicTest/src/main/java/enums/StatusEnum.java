@@ -22,7 +22,8 @@ public enum StatusEnum {
     VERSION_ERROR(790),             //版本号异常
     UPLOAD_CLOUD_ERROR(800),        //上传云服务器有误
     PAGE_NUM_ERROR(810),            //页码数有误
-    METHOD_ERROR(444);              //传入参数有误
+    METHOD_ERROR(444),              //传入参数有误
+    DESIRE_EXIST(1123);             //已经存在相同的愿望
     private int state;
 
     StatusEnum(int state) {

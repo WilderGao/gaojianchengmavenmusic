@@ -22,14 +22,14 @@ public class SongController {
     @Autowired
     private SongServiceImpl songService;
     /**
-     * 获得歌曲列表的控制器，采用分页查询
+     * 获得愿望列表的控制器，采用分页查询
      * @param pageNum   第几页
      * @param pageSize  一页的数量
      */
     @RequestMapping(value = "/wantlist",method = RequestMethod.GET)
     @ResponseBody
-    public Feedback<List<WishModel>> getWishList(int pageNum , int pageSize){
-        return songService.handleWish(pageNum,pageSize);
+    public Feedback<List<WishModel>> getWishList(@Param("pageNum") int pageNum , @Param("pageSize") int pageSize , @Param("userId") int userId){
+        return songService.handleWish(pageNum,pageSize,userId);
     }
 
     /**
@@ -65,7 +65,17 @@ public class SongController {
     @GetMapping(value = "/servermusic")
     @ResponseBody
     public Feedback<List<DownloadModel>> getMavenMusic(@Param("pageNum")int pageNum , @Param("pageSize")int pageSize , @Param("singerName")String singerName){
-        System.out.println("pageNum:"+pageNum+"pageSize:"+pageSize+"singerName:"+singerName);
         return songService.getMavenMusic(pageNum,pageSize,singerName);
+    }
+
+    /**
+     * 愿望请求
+     * @param wishModel
+     * @return
+     */
+    @PostMapping(value = "/desire")
+    @ResponseBody
+    public Feedback<String> desireMusic(@RequestBody WishModel wishModel){
+        return songService.desireMusicService(wishModel);
     }
 }

@@ -1,6 +1,5 @@
 package service.Impl;
 
-import com.alibaba.druid.support.spring.stat.annotation.Stat;
 import com.github.pagehelper.PageHelper;
 import dao.InsertSongDao;
 import dao.SongDao;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import service.SongService;
+import utils.PatternUtils;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class SongServiceImpl implements SongService {
     private InsertSongDao insertSongDao;
 
     @Override
-    public Feedback<List<WishModel>> handleWish(int pageNum, int pageSize) {
+    public Feedback<List<WishModel>> handleWish(int pageNum, int pageSize , int userId) {
         Feedback<List<WishModel>> feedback = new Feedback<>();
         //判断查询的页码错误与否
         if (pageNum <= 0 || pageSize <= 0){
@@ -45,7 +45,7 @@ public class SongServiceImpl implements SongService {
             return feedback;
         }else {
             PageHelper.startPage(pageNum,pageSize);
-            List<WishModel> wishModelList = songDao.getWishList();
+            List<WishModel> wishModelList = songDao.getWishList(userId);
             feedback.setStatus(StatusEnum.OK.getState());
             feedback.setData(wishModelList);
             return feedback;
@@ -74,8 +74,10 @@ public class SongServiceImpl implements SongService {
         }else {
             try {
                 songDao.updateWishState(wishModel);
-                DownloadModel downloadModel = songDao.selectWishById(wishModel.getWishId());
+                //这里只要通过Id来找愿望并且更新下载清单
+                DownloadModel downloadModel = songDao.selectWish(wishModel.getWishId(),null,null);
                 downloadModel.setPlayUrl(wishModel.getSongURL());
+                downloadModel.setImgUrl(PatternUtils.getSingerPicUrl(downloadModel.getSingerName()));
                 insertSongDao.insertSongCloud(downloadModel);
                 //正常情况
                 feedback.setStatus(StatusEnum.OK.getState());
@@ -151,6 +153,35 @@ public class SongServiceImpl implements SongService {
             feedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
             return feedback;
         }
+    }
+
+    @Override
+    public Feedback<String> desireMusicService(WishModel wishModel) {
+        Feedback<String> feedback = new Feedback<>();
+        if (null == wishModel || wishModel.getSingerName() == null || wishModel.getSongName() == null){
+            //参数出现错误
+            feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
+            return feedback;
+        }else {
+            DownloadModel downloadModel = songDao.selectWish(-1,wishModel.getSongName(),wishModel.getSingerName());
+            if (downloadModel != null){
+                //不等于空证明这条愿望已经存在了
+                feedback.setStatus(StatusEnum.DESIRE_EXIST.getState());
+                return feedback;
+            }else {
+                try {
+                    songDao.insertWish(wishModel);
+                    feedback.setStatus(StatusEnum.OK.getState());
+                    return feedback;
+                }catch (Exception e){
+                    LOGGER.error("=======插入数据库出现错误======");
+                    e.printStackTrace();
+                    feedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
+                    return feedback;
+                }
+            }
+        }
+
     }
 
 

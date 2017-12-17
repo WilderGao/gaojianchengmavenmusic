@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import service.Impl.UpdateServiceImpl;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author Administrator
  * @time：

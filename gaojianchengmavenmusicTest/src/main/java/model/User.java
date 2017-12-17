@@ -1,14 +1,22 @@
 package model;
 
+import org.hibernate.validator.constraints.Length;
+import javax.validation.constraints.Pattern;
+import java.io.Serializable;
+
 /**
  * @author Administrator
  * @time：
  * @Discription：
  */
-public class User {
+public class User implements Serializable{
     private int userId;
+    @Pattern(regexp = "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$",message = "{user.userEmail.illegal}")
     private String userEmail ;
+
+    @Length(min = 6 , max = 20 , message = "{user.password.length.illegal}")
     private String password ;
+
     private String customerName;
     private String registerCount ;
     private String faceId;

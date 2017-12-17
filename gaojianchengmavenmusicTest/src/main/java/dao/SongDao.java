@@ -13,10 +13,11 @@ import java.util.List;
  */
 public interface SongDao {
     /**
-     * 获得愿望列表
+     * 获得愿望列表，当userId为-1是获取所有列表，有特定参数时获取单个用户的愿望
+     * @param userId
      * @return
      */
-    List<WishModel> getWishList();
+    List<WishModel> getWishList(@Param("userId") int userId);
 
     /**
      * 上传歌曲
@@ -33,11 +34,13 @@ public interface SongDao {
     int updateWishState(WishModel wishModel);
 
     /**
-     * 获取某一个愿望
-     * @param wishId 愿望Id
-     * @return 下载类
+     * 获得某条特定的愿望，通过Id来获得
+     * @param wishId
+     * @param songName
+     * @param singerName
+     * @return
      */
-    DownloadModel selectWishById(@Param("wishId") int wishId);
+    DownloadModel selectWish(@Param("wishId") int wishId , @Param("songName")String songName,@Param("singerName") String singerName);
 
     /**
      * 获得某个人的愿望清单
@@ -45,5 +48,12 @@ public interface SongDao {
      * @return
      */
     List<WishModel> selectWishAboutUser(@Param("userId") int userId);
+
+    /**
+     * 插入愿望
+     * @param wishModel 愿望模型
+     * @return
+     */
+    int insertWish(WishModel wishModel);
 
 }

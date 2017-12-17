@@ -1,11 +1,12 @@
 package controller;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import enums.StatusEnum;
 import model.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import service.Impl.CustomerServiceImpl;
 import service.Impl.SongServiceImpl;
@@ -13,8 +14,7 @@ import utils.CountUtils;
 import utils.MailUtils;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -38,7 +38,14 @@ public class UserController {
 
     @RequestMapping(value = "/login" , method = RequestMethod.POST)
     @ResponseBody
-    public Feedback<Integer> Login(@RequestBody User user){
+    public Feedback<Integer> Login(@RequestBody @Valid User user , BindingResult result){
+        if (result.hasErrors()){
+            List<ObjectError> errors = result.getAllErrors();
+            System.out.println("报错啦草拟吗"+errors.size());
+            for (ObjectError error : errors) {
+                System.out.println(error.getDefaultMessage());
+            }
+        }
         Feedback<Integer> feedback = customerService.loginCustomer(user);
         return feedback;
     }
@@ -88,17 +95,18 @@ public class UserController {
 
     @RequestMapping(value = "/register" , method = RequestMethod.POST)
     @ResponseBody
-    public Feedback<Integer> Resign(@RequestBody ReceiveTo<User> receiveTo, HttpSession session){
+    public Feedback<Integer> Resign(@RequestBody ReceiveTo<User> receiveTo ){
             User user = receiveTo.getData();
             String accountCheck = SessionMap.emailMap.get(user.getUserEmail());
             Feedback<Integer> feedback = customerService.registerCustomer(receiveTo, accountCheck, SessionMap.emailMap);
             return feedback;
         }
 
-    public Feedback<List<WishModel>> wantList(@Param("userId")int userId,
-                                              @Param("pageNum")int pageNum,
-                                              @Param("pageSize")int pageSize){
-        return songService.selectUserSongService(userId,pageNum,pageSize);
-    }
+
+//    public Feedback<List<WishModel>> wantList(@Param("userId")int userId,
+//                                              @Param("pageNum")int pageNum,
+//                                              @Param("pageSize")int pageSize){
+//        return songService.selectUserSongService(userId,pageNum,pageSize);
+//    }
 
 }

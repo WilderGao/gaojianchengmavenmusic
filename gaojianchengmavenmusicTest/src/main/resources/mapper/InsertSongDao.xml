@@ -29,6 +29,7 @@
             </if>
         </where>
     </select>
+
     <!--获得一个歌手的所有歌曲-->
     <select id="getMavenMusicSongs" resultMap="resultSong">
         SELECT DISTINCT * FROM customer_song
@@ -49,5 +50,10 @@
         customer_song
         ORDER BY
         CONVERT (singer_name USING gbk)ASC
+    </select>
+
+    <!--查找某首歌是否存在-->
+    <select id="selectSongByName">
+
     </select>
 </mapper>

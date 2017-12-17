@@ -12,13 +12,15 @@ import java.util.List;
  * @Discription：
  */
 public interface SongService {
+
     /**
      * 获取愿望列表，分页查询
      * @param pageNum
      * @param pageSize
+     * @param userId
      * @return
      */
-    Feedback<List<WishModel>> handleWish(int pageNum , int pageSize);
+    Feedback<List<WishModel>> handleWish(int pageNum , int pageSize , int userId);
 
     /**
      * 上传歌曲后将信息记录在数据库中
@@ -51,4 +53,11 @@ public interface SongService {
      * @return
      */
     Feedback<List<WishModel>> selectUserSongService(int userId , int pageNum , int pageSize);
+
+    /**
+     * 用户愿望请求
+     * @param wishModel
+     * @return
+     */
+    Feedback<String> desireMusicService(WishModel wishModel);
 }

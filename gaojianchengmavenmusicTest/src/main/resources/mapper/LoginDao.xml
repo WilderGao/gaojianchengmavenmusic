@@ -10,16 +10,19 @@
         <result column="face_id" property="faceId"/>
         <result column="customer_name" property="customerName"/>
     </resultMap>
-    <select id="SelectUser" resultMap="userResult">
+    <select id="selectUser" resultMap="userResult">
         SELECT * FROM customer
         <where>
-            <if test="customer_email != null">
-                customer_email = #{customer_email}
+            <if test="userEmail != null">
+                customer_email = #{userEmail}
+            </if>
+            <if test="faceId != null">
+                face_id = #{faceId}
             </if>
         </where>
     </select>
 
-    <insert id="InsertUser">
+    <insert id="insertUser">
         INSERT INTO customer (customer_email , customer_password , face_id , customer_name)
         VALUES (#{userEmail} , #{password},#{faceId},#{customerName})
     </insert>
@@ -27,8 +30,8 @@
     <select id="selectUserByFaceId" resultMap="userResult">
         SELECT * FROM  customer
         <where>
-            <if test="face_id != 0">
-                WHERE face_id = #{face_id}
+            <if test="face_id != null">
+                face_id = #{face_id}
             </if>
         </where>
     </select>

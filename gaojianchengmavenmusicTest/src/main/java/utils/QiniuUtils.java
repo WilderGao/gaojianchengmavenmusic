@@ -43,12 +43,9 @@ public final class QiniuUtils {
         //文件名称
         String key = localFilePath.substring(localFilePath.lastIndexOf("\\")+1,localFilePath.length());
         String upToken = auth.uploadToken(BUCKET,null,expireSeconds,putPolicy);
-        System.out.println("打印的upToken为"+upToken);
         try {
             Response response = uploadManager.put(localFilePath , key ,upToken);
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(),DefaultPutRet.class);
-            System.out.println("得到的key为: "+putRet.key);
-            System.out.println("得到的hash为: "+putRet.hash);
             return getRequestToQiniuUrl(key);
 
         } catch (QiniuException e) {
@@ -72,9 +69,5 @@ public final class QiniuUtils {
         }
         String finalUrl = String.format("%s/%s",DOMAIN_OF_BUCKET,encodingFileName);
         return finalUrl;
-    }
-
-    public static void main(String[] args) {
-        uploadFileToQiniu("D:\\KuGou\\薛之谦 - 意外.mp3");
     }
 }

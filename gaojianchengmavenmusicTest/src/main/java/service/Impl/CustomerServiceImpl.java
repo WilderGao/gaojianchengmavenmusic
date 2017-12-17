@@ -1,6 +1,5 @@
 package service.Impl;
 
-import com.alibaba.druid.support.spring.stat.annotation.Stat;
 import dao.LoginDao;
 import enums.StatusEnum;
 import model.Feedback;
@@ -14,11 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import service.CustomerService;
 import utils.CountUtils;
 
-import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 /**
- * @Author:高键城
+ * @author Administrator
  * @time：
  * @Discription：
  */
@@ -47,8 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
           return feedback;
         }
 
-        User userCheck = loginDao.SelectUser(user.getUserEmail());
-        System.out.println("userId为：  "+userCheck.getUserId());
+        User userCheck = loginDao.selectUser(user.getUserEmail(),user.getFaceId());
 
       if (userCheck == null){
           feedback = new Feedback<>();
@@ -86,21 +83,21 @@ public class CustomerServiceImpl implements CustomerService {
         if (method == NORMAL_REGISTER ) {
             //判断是普通注册
             if (!user.getRegisterCount().equals(accountCheck)) {
-                LOGGER.error("验证码错误");
+                LOGGER.error("====验证码错误====");
                 feedback.setStatus(StatusEnum.AUTH_NULL.getState());
                 return feedback;
             }else if (user.getCustomerName() == null){
-                LOGGER.error("没有填写用户名");
+                LOGGER.error("====没有填写用户名====");
                 feedback.setStatus(StatusEnum.NAME_NULL_ERROR.getState());
                 return feedback;
             }
-            User userCheck = loginDao.SelectUser(user.getUserEmail());
+            User userCheck = loginDao.selectUser(user.getUserEmail(),user.getFaceId());
             if (userCheck != null) {
                 feedback.setStatus(StatusEnum.ACCOUNT_ALREADY_EXIST.getState());
                 return feedback;
             } else {
                 try {
-                    loginDao.InsertUser(user);
+                    loginDao.insertUser(user);
                     map.remove(user.getUserEmail());
                     feedback.setStatus(StatusEnum.OK.getState());
                     return feedback;
@@ -115,7 +112,7 @@ public class CustomerServiceImpl implements CustomerService {
                 feedback.setStatus(StatusEnum.ACCOUNT_ALREADY_EXIST.getState());
                 return feedback;
             }else {
-                loginDao.InsertUser(user);
+                loginDao.insertUser(user);
                 //刷脸注册不需要验证码
                 feedback.setStatus(StatusEnum.OK.getState());
                 return feedback;

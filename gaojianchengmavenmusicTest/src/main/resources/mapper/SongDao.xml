@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dao.SongDao">
+
     <resultMap id="wishResult" type="model.WishModel">
         <result column="id" property="wishId"/>
         <result column="customer_id" property="customerId"/>
@@ -19,7 +20,7 @@
         <result column="album_name" property="albumName"/>
     </resultMap>
 
-    <!--获取愿望清单-->
+    <!--获取愿望清单,userId存在时获取特定人的愿望，为-1时获取所有愿望-->
     <select id="getWishList" resultType="model.WishModel">
         SELECT customer.customer_name AS 'customerName',
         wish.id AS 'wishId',
@@ -30,7 +31,12 @@
         wish.singer_name AS 'singerName'
         FROM wish
         LEFT JOIN customer ON customer.customer_id = wish.customer_id
-        WHERE wish.customer_id = 3 AND wish.wish_state != 1
+        <where>
+            wish.wish_state != 1
+            <if test="userId != -1">
+                AND wish.customer_id = #{userId}
+            </if>
+        </where>
         ORDER BY id DESC
     </select>
 
@@ -50,13 +56,19 @@
             id = #{wishId}
         </where>
     </update>
-na
+
     <!--获得一条愿望，id为愿望Id-->
-    <select id="selectWishById" parameterType="java.lang.Integer" resultMap="downLoadResult">
+    <select id="selectWish" resultMap="downLoadResult">
         SELECT * FROM wish
         <where>
-            <if test="wishId != 0">
+            <if test="wishId >= 0">
                 id = #{wishId}
+            </if>
+            <if test="songName != null">
+                AND song_name = #{songName}
+            </if>
+            <if test="singerName != null">
+                AND singer_name = #{singerName}
             </if>
         </where>
     </select>
@@ -71,5 +83,9 @@ na
         </where>
     </select>
 
-
+    <insert id="insertWish" parameterType="model.WishModel">
+        INSERT INTO wish
+        (customer_id , song_name , singer_name , album_name ,wish_state)
+        VALUES (#{customerId},#{songName},#{singerName},#{albumName},0)
+    </insert>
 </mapper>
