@@ -23,7 +23,9 @@ public enum StatusEnum {
     UPLOAD_CLOUD_ERROR(800),        //上传云服务器有误
     PAGE_NUM_ERROR(810),            //页码数有误
     METHOD_ERROR(444),              //传入参数有误
-    DESIRE_EXIST(1123);             //已经存在相同的愿望
+    DESIRE_EXIST(1123),             //已经存在相同的愿望
+    SINGER_NOT_EXIST(666),          //歌手不存在
+    WISH_IS_ACHIEVED(777);          //歌曲愿望已经被实现
     private int state;
 
     StatusEnum(int state) {

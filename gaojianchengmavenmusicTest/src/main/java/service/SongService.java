@@ -56,8 +56,15 @@ public interface SongService {
 
     /**
      * 用户愿望请求
-     * @param wishModel
+     * @param wishModel 匹配歌手名或者歌曲名
      * @return
      */
     Feedback<String> desireMusicService(WishModel wishModel);
+
+    /**
+     * 搜索歌曲
+     * @param information
+     * @return
+     */
+    Feedback<List<DownloadModel>> searchSongService(String information);
 }

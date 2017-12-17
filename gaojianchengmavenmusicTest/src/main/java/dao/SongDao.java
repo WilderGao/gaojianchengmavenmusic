@@ -56,4 +56,6 @@ public interface SongDao {
      */
     int insertWish(WishModel wishModel);
 
+    List<DownloadModel> selectServerSong(@Param("information") String information);
+
 }

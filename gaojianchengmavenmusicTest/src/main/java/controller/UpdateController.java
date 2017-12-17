@@ -1,9 +1,11 @@
 package controller;
 
 import model.Feedback;
+import model.Notice;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,18 +19,13 @@ import service.Impl.UpdateServiceImpl;
 @Controller
 @RequestMapping("/update")
 public class UpdateController {
+    @Autowired
     private UpdateServiceImpl updateService;
-    private Feedback feedback ;
-    @Autowired(required = false)
-    public UpdateController(UpdateServiceImpl updateService){
-        this.updateService = updateService;
-    }
-    @RequestMapping(value = "/version",method = RequestMethod.GET)
+
+    @GetMapping(value = "/notice")
     @ResponseBody
-    public Feedback<String> VersionCheck(@Param("versionCode") int versionCode){
-        System.out.println(versionCode+"版本号");
-        feedback = updateService.CheckVersion(versionCode);
-        return feedback;
+    public Feedback<Notice> noticeInform(@Param("userId") int userId , @Param("versionCode")int versionCode){
+        return updateService.checkVersion(userId , versionCode);
     }
 
 }

@@ -32,7 +32,9 @@
         FROM wish
         LEFT JOIN customer ON customer.customer_id = wish.customer_id
         <where>
+            <if test="userId == -1">
             wish.wish_state != 1
+            </if>
             <if test="userId != -1">
                 AND wish.customer_id = #{userId}
             </if>
@@ -88,4 +90,15 @@
         (customer_id , song_name , singer_name , album_name ,wish_state)
         VALUES (#{customerId},#{songName},#{singerName},#{albumName},0)
     </insert>
+
+    <select id="selectServerSong" resultMap="downLoadResult">
+        SELECT * FROM customer_song
+        <where>
+            <if test="information != null">
+            song_name LIKE %#{information}% OR singer_name LIKE %#{information}%
+            </if>
+        </where>
+        ORDER BY
+        CONVERT (song_name USING gbk)ASC
+    </select>
 </mapper>

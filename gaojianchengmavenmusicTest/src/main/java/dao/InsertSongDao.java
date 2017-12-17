@@ -28,11 +28,13 @@ public interface InsertSongDao {
     List<DownloadModel> getSongs(@Param("customer_id")long customerId);
 
     /**
-     * 获得服务器音乐区关于这个歌手的歌曲信息
-     * @param singerName 歌手名字
+     * 获得服务器音乐区关于这个歌手的歌曲信息,当歌曲名称不为空时，获得特定的某首歌曲
+     * @param singerName
+     * @param songName
      * @return
      */
-    List<DownloadModel> getMavenMusicSongs(@Param("singerName") String singerName);
+    List<DownloadModel> getMavenMusicSongs(@Param("singerName") String singerName,
+                                           @Param("songName") String songName);
 
 
     /**

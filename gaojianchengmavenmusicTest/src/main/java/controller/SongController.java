@@ -19,6 +19,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/song")
 public class SongController {
+
     @Autowired
     private SongServiceImpl songService;
     /**
@@ -77,5 +78,11 @@ public class SongController {
     @ResponseBody
     public Feedback<String> desireMusic(@RequestBody WishModel wishModel){
         return songService.desireMusicService(wishModel);
+    }
+
+    @GetMapping(value = "/search")
+    @ResponseBody
+    public Feedback<List<DownloadModel>> searchMusic(@Param("information")String information){
+        return songService.searchSongService(information);
     }
 }

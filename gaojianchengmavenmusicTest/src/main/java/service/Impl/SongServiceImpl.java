@@ -1,5 +1,6 @@
 package service.Impl;
 
+import com.alibaba.druid.support.spring.stat.annotation.Stat;
 import com.github.pagehelper.PageHelper;
 import dao.InsertSongDao;
 import dao.SongDao;
@@ -116,7 +117,7 @@ public class SongServiceImpl implements SongService {
                     return feedback;
                 } else {
                     //查询数据库
-                    List<DownloadModel> downloadModelList = insertSongDao.getMavenMusicSongs(singerName);
+                    List<DownloadModel> downloadModelList = insertSongDao.getMavenMusicSongs(singerName , null);
                     if (null == downloadModelList) {
                         feedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
                         return feedback;
@@ -155,6 +156,7 @@ public class SongServiceImpl implements SongService {
         }
     }
 
+
     @Override
     public Feedback<String> desireMusicService(WishModel wishModel) {
         Feedback<String> feedback = new Feedback<>();
@@ -163,16 +165,34 @@ public class SongServiceImpl implements SongService {
             feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
             return feedback;
         }else {
-            DownloadModel downloadModel = songDao.selectWish(-1,wishModel.getSongName(),wishModel.getSingerName());
-            if (downloadModel != null){
-                //不等于空证明这条愿望已经存在了
-                feedback.setStatus(StatusEnum.DESIRE_EXIST.getState());
-                return feedback;
-            }else {
-                try {
-                    songDao.insertWish(wishModel);
-                    feedback.setStatus(StatusEnum.OK.getState());
-                    return feedback;
+            //获得歌手的名字
+            String singerName = wishModel.getSingerName();
+            try {
+                    if (PatternUtils.getSingerPicUrl(singerName).equals(PatternUtils.NULL_PATTERN)){
+                        //说明不存在此歌手
+                        feedback.setStatus(StatusEnum.SINGER_NOT_EXIST.getState());
+                        return feedback;
+                    }
+                    //查询这个愿望是否被他人许了
+                    DownloadModel downloadModel = songDao.selectWish(-1,wishModel.getSongName(),wishModel.getSingerName());
+                    //通过查询这个愿望的歌曲在音乐区是否已经存在了
+                    List<DownloadModel> existModels = insertSongDao.getMavenMusicSongs(wishModel.getSingerName(),wishModel.getSongName());
+                    if (downloadModel != null){
+                        //不等于空证明这条愿望已经存在了
+                        System.out.println("这条愿望已经存在了");
+                        feedback.setStatus(StatusEnum.DESIRE_EXIST.getState());
+                        return feedback;
+                    }else if (existModels.size() != 0) {
+                        //证明服务器音乐区已经有了这首歌曲
+                        System.out.println("服务器音乐区已经有了这首歌曲");
+                        feedback.setStatus(StatusEnum.WISH_IS_ACHIEVED.getState());
+                        return feedback;
+                    }else {
+                        songDao.insertWish(wishModel);
+                        System.out.println("插入成功");
+                        feedback.setStatus(StatusEnum.OK.getState());
+                        return feedback;
+                    }
                 }catch (Exception e){
                     LOGGER.error("=======插入数据库出现错误======");
                     e.printStackTrace();
@@ -182,7 +202,28 @@ public class SongServiceImpl implements SongService {
             }
         }
 
+
+    @Override
+    public Feedback<List<DownloadModel>> searchSongService(String information) {
+        Feedback<List<DownloadModel>> feedback = new Feedback<>();
+        if (null == information || "" == information || information.contains("<") || information.contains(">")){
+            feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
+            return feedback;
+        }else {
+            try {
+                List<DownloadModel> downloadModels = songDao.selectServerSong(information);
+                feedback.setStatus(StatusEnum.OK.getState());
+                feedback.setData(downloadModels);
+            }catch (Exception e){
+                LOGGER.error("======数据库遇到问题======");
+                e.printStackTrace();
+                feedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
+                return feedback;
+            }
+            return feedback;
+        }
     }
 
-
 }
+
+

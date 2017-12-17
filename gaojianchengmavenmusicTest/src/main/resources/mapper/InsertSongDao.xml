@@ -20,22 +20,25 @@
         VALUES
         (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
     </insert>
-    <!--获得一个用户的下载歌曲-->
+    <!--获得下载歌曲,当传入的参数为Id时获取某个人的下载歌曲，当传入的是歌曲名和歌手名的时候获取特定的某首歌曲-->
     <select id="getSongs" resultMap="resultSong">
         SELECT * FROM customer_song
         <where>
-            <if test="customer_id != 0">
+            <if test="customer_id >= 0">
                 customer_id = ${customer_id}
             </if>
         </where>
     </select>
 
-    <!--获得一个歌手的所有歌曲-->
+    <!--获得一个歌手的所有歌曲,当传入的歌曲名称不为空时则获取特定的某首歌-->
     <select id="getMavenMusicSongs" resultMap="resultSong">
         SELECT DISTINCT * FROM customer_song
         <where>
             <if test="singerName != null">
                 singer_name = #{singerName}
+            </if>
+            <if test="songName != null">
+                AND song_name = #{songName}
             </if>
         </where>
         ORDER BY
@@ -54,6 +57,6 @@
 
     <!--查找某首歌是否存在-->
     <select id="selectSongByName">
-
+        SELECT *
     </select>
 </mapper>
