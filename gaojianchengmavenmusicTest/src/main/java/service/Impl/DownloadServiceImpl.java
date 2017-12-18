@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import service.DownloadService;
+import utils.PatternUtils;
+import utils.QiniuUtils;
 
 import java.io.*;
 import java.util.List;
@@ -34,62 +36,26 @@ public class DownloadServiceImpl implements DownloadService {
 
 
     @Override
-    public Feedback CloudFile(String rootPath, DownloadModel downloadModel) throws IOException {
-        if (rootPath == null || downloadModel== null || downloadModel.getPlayUrl() == null ) {
+    public Feedback cloudFile(DownloadModel downloadModel) throws IOException {
+        String singerName = downloadModel.getSingerName();
+        System.out.println(singerName);
+        if (downloadModel== null || downloadModel.getPlayUrl() == null ) {
             feedback.setStatus(StatusEnum.URL_NULL.getState());
         }else {
             //分别得到图片和歌曲的Url
-            String ImgPath = downloadModel.getImgUrl();
-            String PlayPath = downloadModel.getPlayUrl();
-//            //下载的数组
-//            byte[] bytes = new byte[1024];
-//            int check;
-//            //对图片进行处理
-//            if (downloadModel.getImgUrl()!=null && downloadModel.getPlayUrl()!=null) {
-//                lastIndexOf("/"));
-//                File PlayFile = new File(PlayPath);
-//                File ImgFile = new File(ImgPath);
-//
-//                if (!ImgFile.exists()) {
-//                    try {
-//                        ImgFile.createNewFile();
-//                    } catch (IOException e) {
-//                        LOGGER.error("创建文件失败");
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//                if (!PlayFile.exists()) {
-//                    try {
-//                        PlayFile.createNewFile();
-//                    } catch (IOException e) {
-//                        LOGGER.error("创建文件失败");
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//
-//                //从URL中获取下载图片资源
-//                BufferedInputStream inputStream = new BufferedInputStream(new URL(downloadModel.getImgUrl()).openConnection().getInputStream());
-//                BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(ImgFile));
-//                while ((check = inputStream.read(bytes)) != -1) {
-//                    outputStream.write(bytes, 0, check);
-//                }
-//                inputStream.close();
-//                outputStream.close();
-//
-//                //下载音乐资源
-//                BufferedInputStream musicInputStream = new BufferedInputStream(new URL(downloadModel.getPlayUrl()).openConnection().getInputStream());
-//                BufferedOutputStream musicOutputStream = new BufferedOutputStream(new FileOutputStream(PlayFile));
-//                while ((check = musicInputStream.read(bytes))!=-1){
-//                    musicOutputStream.write(bytes,0,check);
-//                }
-//                musicInputStream.close();
-//                musicOutputStream.close();
-//            }
+            String imgPath = downloadModel.getImgUrl();
+            String playPath = downloadModel.getPlayUrl();
+            //将歌曲上传到七牛云并且获得存放在七牛的url
+            String uploadPlayUrl = QiniuUtils.uploadFileToQiniu(downloadModel.getSongName(),playPath);
+            if (uploadPlayUrl != null) {
+                downloadModel.setPlayUrl(uploadPlayUrl);
+                String singerPic = PatternUtils.getSingerPicUrl(singerName);
+                downloadModel.setSingerUrl(singerPic);
+            }
             //最后将路径保存到数据库
             try {
                 int checkExist = 0;
-                LOGGER.info(downloadModel.getSingerName()+"\n"+downloadModel.getSongName());
-                if (ImgPath!=null && PlayPath!=null) {
+                if (imgPath!=null && playPath!=null) {
                     List<DownloadModel> downloadModels = insertSongDao.getSongs(downloadModel.getCustomerId());
                      //遍历查找这个用户是否已经下载了这首歌
                     for (DownloadModel model : downloadModels) {

@@ -82,7 +82,9 @@ public class SongController {
 
     @GetMapping(value = "/search")
     @ResponseBody
-    public Feedback<List<DownloadModel>> searchMusic(@Param("information")String information){
-        return songService.searchSongService(information);
+    public Feedback<List<DownloadModel>> searchMusic(@Param("information")String information,
+                                                     @Param("pageNum") int pageNum,
+                                                     @Param("pageSize") int pageSize){
+        return songService.searchSongService(information,pageNum,pageSize);
     }
 }

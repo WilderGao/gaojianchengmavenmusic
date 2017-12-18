@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import service.SongService;
 import utils.PatternUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -61,8 +62,16 @@ public class SongServiceImpl implements SongService {
             feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
             return feedback;
         }else {
-            songDao.uploadSong(downloadModel);
-            feedback.setStatus(StatusEnum.OK.getState());
+            try {
+                String singerPic = PatternUtils.getSingerPicUrl("周杰伦");
+                downloadModel.setImgUrl(singerPic);
+                downloadModel.setSingerUrl(singerPic);
+
+                songDao.uploadSong(downloadModel);
+                feedback.setStatus(StatusEnum.OK.getState());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return feedback;
         }
     }
@@ -78,7 +87,9 @@ public class SongServiceImpl implements SongService {
                 //这里只要通过Id来找愿望并且更新下载清单
                 DownloadModel downloadModel = songDao.selectWish(wishModel.getWishId(),null,null);
                 downloadModel.setPlayUrl(wishModel.getSongURL());
-                downloadModel.setImgUrl(PatternUtils.getSingerPicUrl(downloadModel.getSingerName()));
+                String singerPic = PatternUtils.getSingerPicUrl(downloadModel.getSingerName());
+                downloadModel.setImgUrl(singerPic);
+                downloadModel.setSingerUrl(singerPic);
                 insertSongDao.insertSongCloud(downloadModel);
                 //正常情况
                 feedback.setStatus(StatusEnum.OK.getState());
@@ -204,13 +215,14 @@ public class SongServiceImpl implements SongService {
 
 
     @Override
-    public Feedback<List<DownloadModel>> searchSongService(String information) {
+    public Feedback<List<DownloadModel>> searchSongService(String information,int pageNum , int pageSize) {
         Feedback<List<DownloadModel>> feedback = new Feedback<>();
         if (null == information || "" == information || information.contains("<") || information.contains(">")){
             feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
             return feedback;
         }else {
             try {
+                PageHelper.startPage(pageNum,pageSize);
                 List<DownloadModel> downloadModels = songDao.selectServerSong(information);
                 feedback.setStatus(StatusEnum.OK.getState());
                 feedback.setData(downloadModels);

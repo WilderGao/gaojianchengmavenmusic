@@ -12,6 +12,7 @@ public class DownloadModel {
     private String albumName;
     private String imgUrl;
     private String playUrl;
+    private String singerUrl;
 
     public String getSingerName() {
         return singerName;
@@ -61,15 +62,24 @@ public class DownloadModel {
         this.playUrl = playUrl;
     }
 
+    public String getSingerUrl() {
+        return singerUrl;
+    }
+
+    public void setSingerUrl(String singerUrl) {
+        this.singerUrl = singerUrl;
+    }
+
     @Override
     public String toString() {
         return "DownloadModel{" +
                 "customerId=" + customerId +
                 ", singerName='" + singerName + '\'' +
                 ", songName='" + songName + '\'' +
-                ", ablumName='" + albumName + '\'' +
+                ", albumName='" + albumName + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", playUrl='" + playUrl + '\'' +
+                ", singerUrl='" + singerUrl + '\'' +
                 '}';
     }
 }

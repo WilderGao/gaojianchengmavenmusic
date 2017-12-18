@@ -13,12 +13,13 @@
         <result column="singer_name" property="singerName"/>
         <result column="album_name" property="albumName"/>
         <result column="play_url" property="playUrl"/>
+        <result column="singer_url" property="singerUrl"/>
     </resultMap>
     <insert id="insertSongCloud" parameterType="model.DownloadModel">
         INSERT INTO
-        customer_song (customer_id , img_url , song_name , singer_name , play_url,album_name)
+        customer_song (customer_id , img_url , song_name , singer_name , play_url,album_name,singer_url)
         VALUES
-        (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
+        (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName},#{singerUrl})
     </insert>
     <!--获得下载歌曲,当传入的参数为Id时获取某个人的下载歌曲，当传入的是歌曲名和歌手名的时候获取特定的某首歌曲-->
     <select id="getSongs" resultMap="resultSong">
@@ -48,15 +49,11 @@
     <!-- 获得一系列歌手的名称-->
     <select id="selectMavenSinger" resultMap="resultSong">
         SELECT DISTINCT singer_name ,
-        img_url
+        singer_url
         FROM
         customer_song
         ORDER BY
         CONVERT (singer_name USING gbk)ASC
     </select>
 
-    <!--查找某首歌是否存在-->
-    <select id="selectSongByName">
-        SELECT *
-    </select>
 </mapper>

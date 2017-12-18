@@ -11,7 +11,11 @@ import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 
 /**
@@ -25,11 +29,11 @@ public final class QiniuUtils {
     private static final String BUCKET = "wilderg";
     private static final String DOMAIN_OF_BUCKET = "ozwr11exu.bkt.clouddn.com";
     /**
-     * 将对应的本地资源上传到七牛云上，并返回对应的URL存到数据库进行处理
-     * @param localFilePath 本地资源的访问路径
+     * 数据流将文件上传到七牛云上，并返回对应的URL存到数据库进行处理
+     * @param fileName 文件名
      * @return  存放在七牛云的URL
      */
-    public static final String uploadFileToQiniu(String localFilePath){
+    public static final String uploadFileToQiniu(String fileName , String songUrl) throws IOException {
         //声明接上七牛服务器的哪一个分区，zone2代表华南分区
         Configuration configuration = new Configuration(Zone.zone2());
         //上传管理器
@@ -40,17 +44,21 @@ public final class QiniuUtils {
         putPolicy.put("callbackBody", "{\"key\":\"$(key)\",\"hash\":\"$(etag)\",\"bucket\":\"$(bucket)\",\"fsize\":$(fsize)}");
         putPolicy.put("callbackBodyType", "application/json");
         long expireSeconds = 3600*24*365*10;
+
+        BufferedInputStream songUrlInputStream = new BufferedInputStream(new URL(songUrl).openStream());
+
         //文件名称
-        String key = localFilePath.substring(localFilePath.lastIndexOf("\\")+1,localFilePath.length());
-        String upToken = auth.uploadToken(BUCKET,null,expireSeconds,putPolicy);
+        String key = fileName+".mp3";
+        String upToken = auth.uploadToken(BUCKET);
         try {
-            Response response = uploadManager.put(localFilePath , key ,upToken);
+            Response response = uploadManager.put(songUrlInputStream , key ,upToken ,null , null);
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(),DefaultPutRet.class);
-            return getRequestToQiniuUrl(key);
+            return "http://"+getRequestToQiniuUrl(key);
 
         } catch (QiniuException e) {
             Response response = e.response;
-            System.out.println(response.toString());
+            System.out.println(response.getInfo());
+            e.printStackTrace();
             try {
                 System.out.println(response.bodyString());
             } catch (QiniuException e1) {
@@ -60,7 +68,7 @@ public final class QiniuUtils {
         return null;
     }
 
-    public static String getRequestToQiniuUrl(String fileName){
+    private static String getRequestToQiniuUrl(String fileName){
         String encodingFileName = null;
         try {
             encodingFileName = URLEncoder.encode(fileName,"utf-8");
@@ -70,4 +78,5 @@ public final class QiniuUtils {
         String finalUrl = String.format("%s/%s",DOMAIN_OF_BUCKET,encodingFileName);
         return finalUrl;
     }
+
 }

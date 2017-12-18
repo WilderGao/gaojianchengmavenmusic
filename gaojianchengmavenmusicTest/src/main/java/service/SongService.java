@@ -62,9 +62,11 @@ public interface SongService {
     Feedback<String> desireMusicService(WishModel wishModel);
 
     /**
-     * 搜索歌曲
+     * 搜索歌曲，分页
      * @param information
+     * @param pageNum
+     * @param pageSize
      * @return
      */
-    Feedback<List<DownloadModel>> searchSongService(String information);
+    Feedback<List<DownloadModel>> searchSongService(String information , int pageNum , int pageSize);
 }

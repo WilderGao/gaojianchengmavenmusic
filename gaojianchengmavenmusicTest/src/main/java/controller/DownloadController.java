@@ -33,12 +33,9 @@ public class DownloadController {
     @RequestMapping(value = "/songs",method = RequestMethod.POST)
     @ResponseBody
     public Feedback SaveSongs(@RequestBody  DownloadModel downloadModel ){
-        System.out.println(downloadModel+"\n");
-        //获取WEB-INF路径
-        String rootPath = Thread.currentThread().getContextClassLoader().getResource("/").getPath().replace("/WEB-INF/classes","");
         Feedback feedback = new Feedback();
         try {
-             feedback = downloadService.CloudFile(rootPath,downloadModel);
+             feedback = downloadService.cloudFile(downloadModel);
              return feedback;
         } catch (IOException e) {
             e.printStackTrace();

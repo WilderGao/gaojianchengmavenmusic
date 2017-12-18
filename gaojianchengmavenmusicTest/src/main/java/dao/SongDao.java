@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
+ * @author Administrator
  * @Author:高键城
  * @time：
  * @Discription：
@@ -56,6 +57,11 @@ public interface SongDao {
      */
     int insertWish(WishModel wishModel);
 
+    /**
+     * 获取服务器歌曲信息
+     * @param information
+     * @return
+     */
     List<DownloadModel> selectServerSong(@Param("information") String information);
 
 }

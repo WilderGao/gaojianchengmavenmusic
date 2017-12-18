@@ -18,6 +18,7 @@
         <result column="song_name" property="songName"/>
         <result column="singer_name" property="singerName"/>
         <result column="album_name" property="albumName"/>
+        <result column="singer_url" property="singerUrl"/>
     </resultMap>
 
     <!--获取愿望清单,userId存在时获取特定人的愿望，为-1时获取所有愿望-->
@@ -44,9 +45,10 @@
 
     <insert id="uploadSong" parameterType="model.DownloadModel">
         INSERT INTO customer_song(customer_id,img_url,song_name,
-        singer_name,play_url,album_name)
-        VALUES (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName})
+        singer_name,play_url,album_name,singer_url)
+        VALUES (#{customerId},#{imgUrl},#{songName},#{singerName},#{playUrl},#{albumName},#{singerUrl})
     </insert>
+
 
     <!--上传了一首歌，更改一下状态-->
     <update id="updateWishState" parameterType="model.WishModel">
@@ -95,7 +97,7 @@
         SELECT * FROM customer_song
         <where>
             <if test="information != null">
-            song_name LIKE %#{information}% OR singer_name LIKE %#{information}%
+            song_name LIKE "%"#{information}"%" OR singer_name LIKE "%"#{information}"%"
             </if>
         </where>
         ORDER BY
