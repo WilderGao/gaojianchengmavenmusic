@@ -76,6 +76,7 @@ public final class QiniuUtils {
             e.printStackTrace();
         }
         String finalUrl = String.format("%s/%s",DOMAIN_OF_BUCKET,encodingFileName);
+        finalUrl = finalUrl.replaceAll("\\+","%20");
         return finalUrl;
     }
 

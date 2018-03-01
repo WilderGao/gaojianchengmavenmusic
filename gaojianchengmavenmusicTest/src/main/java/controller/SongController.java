@@ -77,6 +77,7 @@ public class SongController {
     @PostMapping(value = "/desire")
     @ResponseBody
     public Feedback<String> desireMusic(@RequestBody WishModel wishModel){
+        System.out.println("许愿"+wishModel);
         return songService.desireMusicService(wishModel);
     }
 

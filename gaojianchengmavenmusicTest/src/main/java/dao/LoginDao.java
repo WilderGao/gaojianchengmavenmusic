@@ -1,7 +1,10 @@
 package dao;
 
+import model.DownloadModel;
 import model.User;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author Administrator
@@ -13,10 +16,9 @@ public interface LoginDao {
     /**
      * 查找用户是否存在
      * @param customerEmail
-     * @param faceId
      * @return
      */
-    User selectUser(@Param("userEmail") String customerEmail , @Param("faceId") String faceId);
+    User selectUser(@Param("userEmail") String customerEmail);
 
     /**
      * 插入新用户
@@ -30,5 +32,10 @@ public interface LoginDao {
      * @return
      */
     User selectUserByFaceId(@Param("face_id") String faceId);
+
+
+    List<DownloadModel> asdff();
+
+    void insertList(DownloadModel strings);
 
 }

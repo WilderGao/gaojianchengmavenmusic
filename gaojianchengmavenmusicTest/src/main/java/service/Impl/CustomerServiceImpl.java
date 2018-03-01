@@ -26,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final int FACE_REGISTER = 1;
     private final int NORMAL_REGISTER = 2;
     private LoginDao loginDao;
-    private Feedback<Integer> feedback;
+    private Feedback<User> feedback;
 
     @Autowired(required = false)
     public CustomerServiceImpl(LoginDao loginDao){
@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
           return feedback;
         }
 
-        User userCheck = loginDao.selectUser(user.getUserEmail(),user.getFaceId());
+        User userCheck = loginDao.selectUser(user.getUserEmail());
 
       if (userCheck == null){
           feedback = new Feedback<>();
@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
 
           feedback = new Feedback<>();
           feedback.setStatus(StatusEnum.OK.getState());
-          feedback.setData(userCheck.getUserId());
+          feedback.setData(userCheck);
           return feedback;
     }
 
@@ -91,7 +91,7 @@ public class CustomerServiceImpl implements CustomerService {
                 feedback.setStatus(StatusEnum.NAME_NULL_ERROR.getState());
                 return feedback;
             }
-            User userCheck = loginDao.selectUser(user.getUserEmail(),user.getFaceId());
+            User userCheck = loginDao.selectUser(user.getUserEmail());
             if (userCheck != null) {
                 feedback.setStatus(StatusEnum.ACCOUNT_ALREADY_EXIST.getState());
                 return feedback;

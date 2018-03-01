@@ -14,7 +14,7 @@ public class User implements Serializable{
     @Pattern(regexp = "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$",message = "{user.userEmail.illegal}")
     private String userEmail ;
 
-    @Length(min = 6 , max = 20 , message = "{user.password.length.illegal}")
+//    @Length(min = 6 , max = 20 , message = "{user.password.length.illegal}")
     private String password ;
 
     private String customerName;

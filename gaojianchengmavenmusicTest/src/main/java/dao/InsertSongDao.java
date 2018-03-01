@@ -42,4 +42,6 @@ public interface InsertSongDao {
      * @return
      */
     List<DownloadModel> selectMavenSinger();
+
+    List<String> selectSongUrl();
 }

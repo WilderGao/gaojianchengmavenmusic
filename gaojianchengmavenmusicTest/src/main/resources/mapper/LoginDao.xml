@@ -16,9 +16,6 @@
             <if test="userEmail != null">
                 customer_email = #{userEmail}
             </if>
-            <if test="faceId != null">
-                face_id = #{faceId}
-            </if>
         </where>
     </select>
 
@@ -35,4 +32,17 @@
             </if>
         </where>
     </select>
+
+    <select id="asdff" resultType="model.DownloadModel">
+        SELECT id AS 'id',
+        singer_name AS 'singerName'
+        FROM customer_song
+    </select>
+
+    <!--批量插入-->
+    <update id="insertList" >
+        UPDATE customer_song SET
+            singer_url = #{singerUrl}
+            WHERE id = #{id}
+    </update>
 </mapper>

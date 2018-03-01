@@ -91,4 +91,8 @@ public class DownloadServiceImpl implements DownloadService {
             return feedback;
         }
     }
+
+    public List<String> getPlayUrl(){
+        return insertSongDao.selectSongUrl();
+    }
 }

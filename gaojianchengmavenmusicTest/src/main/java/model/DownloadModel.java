@@ -6,6 +6,7 @@ package model;
  * @Discription：
  */
 public class DownloadModel {
+    private int id;
     private long customerId;
     private String singerName;
     private String songName;
@@ -13,6 +14,14 @@ public class DownloadModel {
     private String imgUrl;
     private String playUrl;
     private String singerUrl;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getSingerName() {
         return singerName;
@@ -73,7 +82,8 @@ public class DownloadModel {
     @Override
     public String toString() {
         return "DownloadModel{" +
-                "customerId=" + customerId +
+                "id=" + id +
+                ", customerId=" + customerId +
                 ", singerName='" + singerName + '\'' +
                 ", songName='" + songName + '\'' +
                 ", albumName='" + albumName + '\'' +

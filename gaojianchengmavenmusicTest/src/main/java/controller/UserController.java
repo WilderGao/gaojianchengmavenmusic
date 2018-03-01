@@ -1,5 +1,6 @@
 package controller;
 
+import dao.LoginDao;
 import enums.StatusEnum;
 import model.*;
 import org.apache.ibatis.annotations.Param;
@@ -10,13 +11,19 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import service.Impl.CustomerServiceImpl;
 import service.Impl.SongServiceImpl;
+import utils.AccountTask;
 import utils.CountUtils;
 import utils.MailUtils;
+import utils.PatternUtils;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Administrator
@@ -29,6 +36,10 @@ public class UserController {
 
     private final CustomerServiceImpl customerService;
     private final SongServiceImpl songService;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+    @Autowired
+    private LoginDao loginDao;
 
     @Autowired(required = false)
     public UserController(CustomerServiceImpl customerService,SongServiceImpl songService) {
@@ -36,17 +47,18 @@ public class UserController {
         this.songService = songService;
     }
 
+
+
     @RequestMapping(value = "/login" , method = RequestMethod.POST)
     @ResponseBody
-    public Feedback<Integer> Login(@RequestBody @Valid User user , BindingResult result){
+    public Feedback<User> Login(@RequestBody @Valid User user , BindingResult result){
+        Feedback<User> feedback = new Feedback<>();
+        System.out.println(user);
         if (result.hasErrors()){
-            List<ObjectError> errors = result.getAllErrors();
-            System.out.println("报错啦草拟吗"+errors.size());
-            for (ObjectError error : errors) {
-                System.out.println(error.getDefaultMessage());
-            }
+          feedback.setStatus(StatusEnum.METHOD_ERROR.getState());
+          return feedback;
         }
-        Feedback<Integer> feedback = customerService.loginCustomer(user);
+        feedback = customerService.loginCustomer(user);
         return feedback;
     }
 
@@ -60,26 +72,7 @@ public class UserController {
         String authCode = CountUtils.getRandomString();
         SessionMap.emailMap.put(user.getUserEmail(),authCode);
 //        //判断让session移除某个键值对
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                long start = System.currentTimeMillis();
-                long end ;
-                while(true){
-                    end = System.currentTimeMillis();
-                    if ((end - start)>1000*60*2) {
-                        SessionMap.emailMap.remove(user.getUserEmail());
-                        break;
-                    }
-                    try {
-                        Thread.sleep(5000);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+        executorService.submit(new AccountTask(userEmail));
 
         int result = customerService.GetAccount(authCode);
         if (result == StatusEnum.OK.getState()) {
@@ -98,15 +91,22 @@ public class UserController {
     public Feedback<Integer> Resign(@RequestBody ReceiveTo<User> receiveTo ){
             User user = receiveTo.getData();
             String accountCheck = SessionMap.emailMap.get(user.getUserEmail());
+            System.out.println("Map中的验证码为"+accountCheck);
+            System.out.println("user中的验证码"+user.getRegisterCount());
             Feedback<Integer> feedback = customerService.registerCustomer(receiveTo, accountCheck, SessionMap.emailMap);
             return feedback;
         }
 
 
-//    public Feedback<List<WishModel>> wantList(@Param("userId")int userId,
-//                                              @Param("pageNum")int pageNum,
-//                                              @Param("pageSize")int pageSize){
-//        return songService.selectUserSongService(userId,pageNum,pageSize);
-//    }
+    @RequestMapping("/insertsingerpic")
+    @ResponseBody
+    public void insert() throws IOException {
+        List<DownloadModel> strings = loginDao.asdff();
+        System.out.println(strings);
+        for (DownloadModel downloadModel : strings) {
+            downloadModel.setSingerUrl(PatternUtils.getSingerPicUrl(downloadModel.getSingerName()));
+            loginDao.insertList(downloadModel);
+        }
+    }
 
 }

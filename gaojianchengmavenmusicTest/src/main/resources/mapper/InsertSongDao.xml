@@ -56,4 +56,7 @@
         CONVERT (singer_name USING gbk)ASC
     </select>
 
+    <select id="selectSongUrl" >
+        SELECT play_url FROM customer_song
+    </select>
 </mapper>

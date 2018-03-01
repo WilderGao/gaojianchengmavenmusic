@@ -50,4 +50,12 @@ public class DownloadController {
         Feedback<List<DownloadModel>> feedback = downloadService.GetSongsList(pageNum , pageSize , (long)userId);
         return feedback;
     }
+
+    @RequestMapping("/checkSong")
+    public void changeUrl(){
+        List<String> playUrl = downloadService.getPlayUrl();
+        for (String s : playUrl) {
+            s.replaceAll("\\+","%20");
+        }
+    }
 }

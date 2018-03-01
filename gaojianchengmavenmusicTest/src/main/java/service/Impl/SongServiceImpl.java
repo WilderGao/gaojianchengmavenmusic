@@ -63,7 +63,7 @@ public class SongServiceImpl implements SongService {
             return feedback;
         }else {
             try {
-                String singerPic = PatternUtils.getSingerPicUrl("周杰伦");
+                String singerPic = PatternUtils.getSingerPicUrl(downloadModel.getSingerName());
                 downloadModel.setImgUrl(singerPic);
                 downloadModel.setSingerUrl(singerPic);
 
@@ -186,14 +186,15 @@ public class SongServiceImpl implements SongService {
                     }
                     //查询这个愿望是否被他人许了
                     DownloadModel downloadModel = songDao.selectWish(-1,wishModel.getSongName(),wishModel.getSingerName());
-                    //通过查询这个愿望的歌曲在音乐区是否已经存在了
-                    List<DownloadModel> existModels = insertSongDao.getMavenMusicSongs(wishModel.getSingerName(),wishModel.getSongName());
                     if (downloadModel != null){
                         //不等于空证明这条愿望已经存在了
                         System.out.println("这条愿望已经存在了");
                         feedback.setStatus(StatusEnum.DESIRE_EXIST.getState());
                         return feedback;
-                    }else if (existModels.size() != 0) {
+                    }
+                    //通过查询这个愿望的歌曲在音乐区是否已经存在了
+                    List<DownloadModel> existModels = insertSongDao.getMavenMusicSongs(wishModel.getSingerName(),wishModel.getSongName());
+                    if (existModels.size() != 0) {
                         //证明服务器音乐区已经有了这首歌曲
                         System.out.println("服务器音乐区已经有了这首歌曲");
                         feedback.setStatus(StatusEnum.WISH_IS_ACHIEVED.getState());
