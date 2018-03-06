@@ -2,6 +2,7 @@ package service;
 
 import model.Feedback;
 import model.Notice;
+import model.VersionUpdate;
 
 /**
  * @author Administrator
@@ -9,13 +10,12 @@ import model.Notice;
  * @Discription：
  */
 public interface UpdateService {
-//    /**
-//     * 版本更新检查
-//     * @param userId 用户Id
-//     * @param versionCode   版本Id
-//     * @return
-//     */
-//    Feedback<Notice> checkVersion(int userId , int versionCode);
+    /**
+     * 版本更新检查
+     * @param versionCode   版本Id
+     * @return
+     */
+    Feedback<VersionUpdate> checkVersion(int versionCode);
 
     Feedback<Notice> simpleNotice();
 }

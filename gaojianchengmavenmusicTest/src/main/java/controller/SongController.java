@@ -31,7 +31,7 @@ public class SongController {
      */
     @RequestMapping(value = "/wantlist",method = RequestMethod.GET)
     @ResponseBody
-    @RequestLimit(count = 15 , time = 30000)
+    @RequestLimit(count = 5)
     public Feedback<List<WishModel>> getWishList(@Param("pageNum") int pageNum , @Param("pageSize") int pageSize , @Param("userId") int userId , HttpServletRequest request){
         return songService.handleWish(pageNum,pageSize,userId);
     }

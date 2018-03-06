@@ -30,4 +30,11 @@
         VALUES
         (#{customerId} , #{noticeId})
     </insert>
+
+    <!--获取最新的一条更新消息-->
+    <select id="selectLatestVersion" resultType="model.VersionUpdate">
+        SELECT * FROM version_update
+        ORDER BY version_id DESC
+        LIMIT 1
+    </select>
 </mapper>

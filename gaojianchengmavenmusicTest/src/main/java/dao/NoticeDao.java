@@ -1,6 +1,7 @@
 package dao;
 
 import model.Notice;
+import model.VersionUpdate;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -27,4 +28,10 @@ public interface NoticeDao {
      * 插入通知列表
      */
     void informUserNotice(@Param("customerId") int customerId , @Param("noticeId") int noticeId);
+
+    /**
+     * 获取最新的一条更新信息
+     * @return
+     */
+    VersionUpdate selectLatestVersion();
 }

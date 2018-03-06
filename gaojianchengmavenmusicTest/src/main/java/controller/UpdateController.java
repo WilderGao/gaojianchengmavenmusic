@@ -2,6 +2,7 @@ package controller;
 
 import model.Feedback;
 import model.Notice;
+import model.VersionUpdate;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,11 +26,11 @@ public class UpdateController {
     /**
      * 通知接口暂时关闭
      */
-//    @GetMapping(value = "/notice")
-//    @ResponseBody
-//    public Feedback<Notice> noticeInform(@Param("userId") int userId , @Param("versionCode")int versionCode){
-//        return updateService.checkVersion(userId , versionCode);
-//    }
+    @GetMapping(value = "/version")
+    @ResponseBody
+    public Feedback<VersionUpdate> noticeInform(@Param("versionCode")int versionCode){
+        return updateService.checkVersion(versionCode);
+    }
 
 
     /**

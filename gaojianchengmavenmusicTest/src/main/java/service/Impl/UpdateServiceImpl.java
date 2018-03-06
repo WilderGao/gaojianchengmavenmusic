@@ -4,6 +4,7 @@ import dao.NoticeDao;
 import enums.StatusEnum;
 import model.Feedback;
 import model.Notice;
+import model.VersionUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,6 +24,7 @@ public class UpdateServiceImpl implements UpdateService{
     private String URL = "http://120.77.38.183:8080/gaojiancheng.mavenmusic/";
     private String rootPath = "hello";
     private Feedback<Notice> feedback;
+    private Feedback<VersionUpdate> updateFeedback;
 
     @Autowired
     private NoticeDao noticeDao;
@@ -41,15 +43,34 @@ public class UpdateServiceImpl implements UpdateService{
         return feedback;
     }
 
-//    @Override
-//    @Transactional(propagation = Propagation.NOT_SUPPORTED,rollbackFor = Exception.class)
-//    public Feedback<Notice> checkVersion(int userId , int versionCode) {
-//        Notice notice = new Notice();
-//        feedback = new Feedback<>();
-//        if (versionCode < 0){
-//            feedback.setStatus(StatusEnum.VERSION_ERROR.getState());
-//            return feedback;
-//        }
+    @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED,rollbackFor = Exception.class)
+    public Feedback<VersionUpdate> checkVersion(int versionCode) {
+
+        updateFeedback = new Feedback<>();
+        if (versionCode < 0){
+            updateFeedback.setStatus(StatusEnum.VERSION_ERROR.getState());
+            return updateFeedback;
+        }
+        //找到最新的更新信息
+        VersionUpdate update = noticeDao.selectLatestVersion();
+        if (update == null){
+            updateFeedback.setStatus(StatusEnum.INSERT_SQL_ERROR.getState());
+        }else if (update.getVersionId() == versionCode){
+            //证明已经是最新的版本了
+            updateFeedback.setStatus(StatusEnum.ALREADY_LASTEST.getState());
+        }else {
+            //证明存在更新
+            updateFeedback.setStatus(StatusEnum.OK.getState());
+            updateFeedback.setData(update);
+        }
+        return updateFeedback;
+    }
+
+
+
+}
+
 //        String apkPath = rootPath+"saved/saveApk";
 //        feedback.setStatus(StatusEnum.ALREADY_LASTEST.getState());
 //        File file = new File(apkPath.substring(1));
@@ -89,10 +110,3 @@ public class UpdateServiceImpl implements UpdateService{
 //                feedback.setStatus(StatusEnum.ALREADY_LASTEST.getState());
 //            }
 //        }
-//
-//        return feedback;
-//    }
-
-
-
-}

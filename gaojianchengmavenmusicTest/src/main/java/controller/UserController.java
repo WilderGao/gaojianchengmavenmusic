@@ -74,7 +74,7 @@ public class UserController {
      */
     @RequestMapping(value = "/getcount")
     @ResponseBody
-    @RequestLimit(time = 6000 , count = 2)
+    @RequestLimit(count = 2)
     public Feedback<User> GetCount(@Param("userEmail") String userEmail , HttpServletRequest request)
             throws UnsupportedEncodingException, MessagingException {
         Feedback<User> feedback = new Feedback<>();
@@ -100,7 +100,7 @@ public class UserController {
 
     @RequestMapping(value = "/register" , method = RequestMethod.POST)
     @ResponseBody
-    @RequestLimit(time = 6000 , count = 2)
+    @RequestLimit( count = 2)
     public Feedback<Integer> Resign(@RequestBody ReceiveTo<User> receiveTo , HttpServletRequest request){
             User user = receiveTo.getData();
             String accountCheck = SessionMap.emailMap.get(user.getUserEmail());
