@@ -51,11 +51,4 @@ public class DownloadController {
         return feedback;
     }
 
-    @RequestMapping("/checkSong")
-    public void changeUrl(){
-        List<String> playUrl = downloadService.getPlayUrl();
-        for (String s : playUrl) {
-            s.replaceAll("\\+","%20");
-        }
-    }
 }

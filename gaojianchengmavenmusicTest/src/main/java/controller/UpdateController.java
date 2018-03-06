@@ -22,10 +22,24 @@ public class UpdateController {
     @Autowired
     private UpdateServiceImpl updateService;
 
+    /**
+     * 通知接口暂时关闭
+     */
+//    @GetMapping(value = "/notice")
+//    @ResponseBody
+//    public Feedback<Notice> noticeInform(@Param("userId") int userId , @Param("versionCode")int versionCode){
+//        return updateService.checkVersion(userId , versionCode);
+//    }
+
+
+    /**
+     * 返回一个小小的公告给APP显示
+     * @return
+     */
     @GetMapping(value = "/notice")
     @ResponseBody
-    public Feedback<Notice> noticeInform(@Param("userId") int userId , @Param("versionCode")int versionCode){
-        return updateService.checkVersion(userId , versionCode);
+    public Feedback<Notice> notice(){
+        return updateService.simpleNotice();
     }
 
 }

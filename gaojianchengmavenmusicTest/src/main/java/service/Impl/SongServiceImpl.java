@@ -63,7 +63,9 @@ public class SongServiceImpl implements SongService {
             return feedback;
         }else {
             try {
-                String singerPic = PatternUtils.getSingerPicUrl(downloadModel.getSingerName());
+                //获得上传歌曲的歌手名称，其中一首歌可能包括多个歌手，暂时采用的办法就是只留下一个歌手
+                String singerName = downloadModel.getSingerName().split("、")[0];
+                String singerPic = PatternUtils.getSingerPicUrl(singerName);
                 downloadModel.setImgUrl(singerPic);
                 downloadModel.setSingerUrl(singerPic);
 

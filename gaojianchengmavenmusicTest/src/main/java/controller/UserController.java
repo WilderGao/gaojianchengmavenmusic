@@ -1,6 +1,7 @@
 package controller;
 
 import dao.LoginDao;
+import enums.RequestLimit;
 import enums.StatusEnum;
 import model.*;
 import org.apache.ibatis.annotations.Param;
@@ -17,6 +18,7 @@ import utils.MailUtils;
 import utils.PatternUtils;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -62,9 +64,19 @@ public class UserController {
         return feedback;
     }
 
+    /**
+     * 获取验证码的请求，一分钟之内最多请求两次
+     * @param userEmail
+     * @param request
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws MessagingException
+     */
     @RequestMapping(value = "/getcount")
     @ResponseBody
-    public Feedback<User> GetCount(@Param("userEmail") String userEmail) throws UnsupportedEncodingException, MessagingException {
+    @RequestLimit(time = 6000 , count = 2)
+    public Feedback<User> GetCount(@Param("userEmail") String userEmail , HttpServletRequest request)
+            throws UnsupportedEncodingException, MessagingException {
         Feedback<User> feedback = new Feedback<>();
         final User user = new User();
         user.setUserEmail(userEmail);
@@ -88,7 +100,8 @@ public class UserController {
 
     @RequestMapping(value = "/register" , method = RequestMethod.POST)
     @ResponseBody
-    public Feedback<Integer> Resign(@RequestBody ReceiveTo<User> receiveTo ){
+    @RequestLimit(time = 6000 , count = 2)
+    public Feedback<Integer> Resign(@RequestBody ReceiveTo<User> receiveTo , HttpServletRequest request){
             User user = receiveTo.getData();
             String accountCheck = SessionMap.emailMap.get(user.getUserEmail());
             System.out.println("Map中的验证码为"+accountCheck);

@@ -1,5 +1,6 @@
 package controller;
 
+import enums.RequestLimit;
 import model.DownloadModel;
 import model.Feedback;
 import model.WishModel;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import service.Impl.SongServiceImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -29,7 +31,8 @@ public class SongController {
      */
     @RequestMapping(value = "/wantlist",method = RequestMethod.GET)
     @ResponseBody
-    public Feedback<List<WishModel>> getWishList(@Param("pageNum") int pageNum , @Param("pageSize") int pageSize , @Param("userId") int userId){
+    @RequestLimit(count = 15 , time = 30000)
+    public Feedback<List<WishModel>> getWishList(@Param("pageNum") int pageNum , @Param("pageSize") int pageSize , @Param("userId") int userId , HttpServletRequest request){
         return songService.handleWish(pageNum,pageSize,userId);
     }
 
